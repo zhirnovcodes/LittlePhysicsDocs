@@ -2,7 +2,7 @@
 # PLACEHOLDERS — search for "PLACEHOLDER" or update these three first:
 #   1. title
 #   2. url / baseurl
-#   3. aux_links (Asset Store + GitHub)
+#   3. aux_links (Asset Store)
 # =============================================================================
 
 # PLACEHOLDER: site title shown in the header and browser tab
@@ -49,8 +49,6 @@ search_enabled: true
 aux_links:
   "Asset Store":
     - "https://assetstore.unity.com/packages/slug/PLACEHOLDER"
-  "GitHub":
-    - "https://github.com/USERNAME/REPO-NAME"
 
 aux_links_new_tab: true
 
