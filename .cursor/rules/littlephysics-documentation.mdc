@@ -11,9 +11,13 @@ This repo (`LittlePhysicsDocs`) documents the Unity package **Little Physics** (
 
 Use these files in `.cursor/files/` plus the package code. **Do not edit the reference files from this repo** — they are author notes; published docs live under `docs/`.
 
+### Documentation text source
+
+**When writing or expanding documentation prose, read `.cursor/files/Little Physics Documentation - doc.txt` first.** That file is the authoritative draft for user-facing text: product pitch, features, limitations, quick start, pipeline narrative, body types, LOD, spatial map, singleton data structures, custom job groups, builders, and related explanations. Expand and adapt its content into published pages under `docs/` — do not invent parallel wording when `doc.txt` already covers the topic.
+
 | File | Role |
 |------|------|
-| `.cursor/files/Little Physics Documentation - doc.txt` | **Main prose source** — product pitch, features, limitations, quick start, pipeline narrative, body types, LOD, spatial map, singleton data structures, custom job groups, builders |
+| `.cursor/files/Little Physics Documentation - doc.txt` | **Main prose source** — read this for documentation text (see above) |
 | `.cursor/files/Little Physics Documentation - pipeline.pdf` | **Pipeline diagram** — system-group hierarchy, update order, which groups are public vs internal |
 | `.cursor/files/Little Physics Documentation - public.txt` | **Public API index** — exhaustive list of types to document (authorings, components, job interfaces, builders, enums, editor tools) |
 
@@ -25,8 +29,8 @@ Package path (implementation source of truth for names, defaults, and behavior):
 
 1. **Package `.cs` files** — field names, defaults, API signatures, system group names
 2. **`pipeline.pdf`** — execution order and group nesting
-3. **`doc.txt`** — user-facing explanations and feature descriptions
-4. **`public.txt`** — coverage checklist (ensure every listed public type gets a doc page or section)
+3. **`.cursor/files/Little Physics Documentation - doc.txt`** — user-facing explanations and feature descriptions
+4. **`.cursor/files/Little Physics Documentation - public.txt`** — coverage checklist (ensure every listed public type gets a doc page or section)
 
 Example: `doc.txt` / `public.txt` say `LittlePhysicsUserImportGroup` — code and `pipeline.pdf` use `LittlePhysicsImportGroup`. Document the **code name**.
 
@@ -109,10 +113,10 @@ Drop placeholder names like `rigidbody-component.md` / `collider-component.md` w
 
 Each `*Authoring` page should include:
 
-1. **Summary** — from class `///` summary or `doc.txt` prose
-2. **When to use** — body type, shape constraints, trigger vs rigid (see `doc.txt` "Types of bodies")
+1. **Summary** — from class `///` summary or `.cursor/files/Little Physics Documentation - doc.txt`
+2. **When to use** — body type, shape constraints, trigger vs rigid (see `doc.txt` → "Types of bodies")
 3. **Inspector fields** — table: Field | Type | Default | Description (verify in package source)
-4. **Inspector screenshot** — `assets/images/{kebab-name}-inspector.png`
+4. **Inspector screenshot** — `assets/images/api-reference/{kebab-name}/inspector.png` (see [Image file structure](#image-file-structure))
 5. **Setup steps** — subscene, bake, play (from `doc.txt` quick start)
 6. **Related components** — internal links via `{% link docs/... %}`
 
@@ -163,21 +167,47 @@ Simulation → LittlePhysicsExportGroup (internal export → user systems)
 ## Links, media, images
 
 - Internal links: `[Title]({% link docs/api-reference/foo.md %})` — never hard-code `baseurl`
-- Images: `![Alt]({{ site.baseurl }}/assets/images/foo.png)`
+- Images: `![Alt]({{ site.baseurl }}/assets/images/...)` — path must follow [Image file structure](#image-file-structure)
 - YouTube: `{% include youtube.html id="VIDEO_ID" %}`
 - Register new images in `assets/images/README.md`
 - Pipeline diagram: reproduce from `pipeline.pdf` as a mermaid or image on the How it works page
 
+### Image file structure
+
+**Image folders must mirror the doc page path under `docs/`.** Drop the `docs/` prefix; use a folder per page; put one or more image files inside that folder.
+
+| Doc page | Image folder |
+|----------|--------------|
+| `docs/guides/builders/dynamic-body-builder/index.md` | `assets/images/guides/builders/dynamic-body-builder/` |
+| `docs/api-reference/dynamic-body-authoring.md` | `assets/images/api-reference/dynamic-body-authoring/` |
+| `docs/getting-started/index.md` | `assets/images/getting-started/` |
+
+- For `index.md` pages, the image folder matches the page’s directory (not `index/`).
+- For single `.md` files, the image folder matches the filename without `.md`.
+- Use descriptive image filenames inside the folder (e.g. `inspector.png`, `diagram.png`), not a flat `{page-name}-inspector.png` at the root of `assets/images/`.
+
+Example:
+
+```
+assets/images/guides/builders/dynamic-body-builder/inspector.png
+```
+
+Markdown reference:
+
+```markdown
+![Dynamic Body Builder inspector]({{ site.baseurl }}/assets/images/guides/builders/dynamic-body-builder/inspector.png)
+```
+
 ## Writing rules
 
 - Use exact type names from code (`DynamicBodyAuthoring`, not "Rigidbody Component")
-- Pull feature/limitation prose from `doc.txt`; verify against code before publishing
+- Pull feature/limitation prose from `.cursor/files/Little Physics Documentation - doc.txt`; verify against code before publishing
 - Document subscene + baking workflow — ECS, not classic MonoBehaviour physics
 - Note co-dependencies (`PhysicsVelocityAuthoring` only on dynamic bodies)
 - Note warnings from source (velocity ignored on `SurfaceBodyAuthoring`)
 - For custom jobs: prefer package job interfaces; use `SimulationDataComponent` physics JobHandle for import/export scheduling
 - Replace `_config.yml` / `index.md` placeholders when publishing
-- Expand reference material — do not paste `doc.txt` verbatim into published pages
+- Expand reference material from `.cursor/files/Little Physics Documentation - doc.txt` — do not paste it verbatim into published pages
 
 ## Local preview
 
