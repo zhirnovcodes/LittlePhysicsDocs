@@ -85,6 +85,16 @@ tags: [authoring, physics, dynamic-body]  # optional; indexed by search
 
 Use `has_children: true` and `permalink:` only on section index pages (see `docs/api-reference/index.md`).
 
+Quote `description` values that contain colons (e.g. `description: "TODO: Dynamic body type."`). Unquoted `TODO: ...` breaks YAML front matter and silently drops `title`, `parent`, and nav hierarchy.
+
+### Unique titles (required)
+
+Just the Docs builds the sidebar by matching `parent` to another page’s `title`. **All titles site-wide must be unique**, especially parent section titles. Duplicate titles (e.g. Guides and API both using `Builders` or `PhysicsBodyData`) break child navigation.
+
+- **API Reference** pages: keep exact C# type names (`DynamicBodyBuilder`, `IBodiesJob`, …).
+- **Guides** that cover the same types: use distinct titles (`Using builders`, `Using IBodiesJob`, `PhysicsBodyData overview`, …).
+- `parent:` must match the parent page’s `title` exactly.
+
 ## File naming
 
 Convert C# type names to kebab-case filenames:

@@ -6,10 +6,23 @@
 # =============================================================================
 
 # PLACEHOLDER: site title shown in the header and browser tab
-title: My Physics Package Docs
-description: Documentation for a Unity Asset Store physics package.
+title: Little Physics Docs
+description: Documentation for the Little Physics Unity ECS package.
 
 theme: just-the-docs
+
+defaults:
+  - scope:
+      path: "docs/"
+      type: "pages"
+    values:
+      layout: default
+
+# Show nav hierarchy errors in the sidebar (duplicate titles, ancestry loops)
+nav_error_report: true
+
+# Keep full main nav visible; do not fold to the active section only
+nav_fold: false
 
 # PLACEHOLDER: project-site URL pieces
 # Live URL will be: https://USERNAME.github.io/REPO-NAME/
@@ -47,3 +60,4 @@ exclude:
   - vendor/gems/
   - vendor/ruby/
   - README.md
+  - .cursor/
