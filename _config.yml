@@ -11,6 +11,10 @@ description: Documentation for the Little Physics Unity ECS package.
 
 theme: just-the-docs
 
+# Mermaid diagrams (```mermaid code fences); disabled by default in Just the Docs
+mermaid:
+  version: "10.9.0"
+
 defaults:
   - scope:
       path: "docs"
