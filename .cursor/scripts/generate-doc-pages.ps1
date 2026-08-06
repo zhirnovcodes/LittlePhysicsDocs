@@ -116,18 +116,18 @@ Write-DocPage 'docs/guides/physics-singleton/index.md' @{
 # Guide titles must be unique site-wide (Just the Docs matches parent by title).
 # Keep exact C# names on API pages; give guide pages distinct titles.
 $singletonPages = @(
-    @{ slug = 'physics-ready-tag'; title = 'PhysicsReadyTag overview' }
-    @{ slug = 'physics-fixed-settings-component'; title = 'PhysicsFixedSettingsComponent overview' }
-    @{ slug = 'physics-variable-settings-component'; title = 'PhysicsVariableSettingsComponent overview' }
-    @{ slug = 'simulation-data-component'; title = 'SimulationDataComponent overview' }
-    @{ slug = 'little-physics-time-component'; title = 'LittlePhysicsTimeComponent overview' }
-    @{ slug = 'physics-structures-component'; title = 'PhysicsStructuresComponent overview' }
-    @{ slug = 'bodies-list'; title = 'BodiesList overview' }
-    @{ slug = 'randoms'; title = 'Randoms overview' }
-    @{ slug = 'entities-map'; title = 'EntitiesMap overview' }
-    @{ slug = 'collision-map-singleton'; title = 'CollisionMapSingleton overview' }
-    @{ slug = 'collisions-singleton'; title = 'CollisionsSingleton overview' }
-    @{ slug = 'physics-body-data'; title = 'PhysicsBodyData overview' }
+    @{ slug = 'physics-ready-tag'; title = 'PhysicsReadyTag' }
+    @{ slug = 'physics-fixed-settings-component'; title = 'PhysicsFixedSettingsComponent' }
+    @{ slug = 'physics-variable-settings-component'; title = 'PhysicsVariableSettingsComponent' }
+    @{ slug = 'simulation-data-component'; title = 'SimulationDataComponent' }
+    @{ slug = 'little-physics-time-component'; title = 'LittlePhysicsTimeComponent' }
+    @{ slug = 'physics-structures-component'; title = 'PhysicsStructuresComponent' }
+    @{ slug = 'bodies-list'; title = 'BodiesList' }
+    @{ slug = 'randoms'; title = 'Randoms' }
+    @{ slug = 'entities-map'; title = 'EntitiesMap' }
+    @{ slug = 'collision-map-singleton'; title = 'CollisionMapSingleton' }
+    @{ slug = 'collisions-singleton'; title = 'CollisionsSingleton' }
+    @{ slug = 'physics-body-data'; title = 'PhysicsBodyData' }
     @{ slug = 'supporting-body-collision-structs'; title = 'Supporting body and collision structs' }
     @{ slug = 'other-public-ecs-components'; title = 'Other public ECS components' }
     @{ slug = 'spatial-map'; title = 'Spatial map' }

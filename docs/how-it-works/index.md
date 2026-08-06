@@ -122,7 +122,7 @@ For authoring setup, see [Getting Started]({% link docs/getting-started/index.md
 
 ## Time control
 
-Pause, slow down, or speed up the simulation at runtime by changing **`TimeScale`** on [`LittlePhysicsTimeComponent`]({% link docs/guides/physics-singleton/little-physics-time-component/index.md %}) — without altering Unity’s fixed timestep. The same singleton also exposes **`DeltaTime`** (scaled substep delta, useful in `LittlePhysicsUserSystemGroup`) and **`ElapsedTime`** (accumulated physics time). See [LittlePhysicsTimeComponent overview]({% link docs/guides/physics-singleton/little-physics-time-component/index.md %}) for field details and usage.
+Pause, slow down, or speed up the simulation at runtime by changing **`TimeScale`** on [`LittlePhysicsTimeComponent`]({% link docs/guides/physics-singleton/little-physics-time-component/index.md %}) — without altering Unity’s fixed timestep. The same singleton also exposes **`DeltaTime`** (scaled substep delta, useful in `LittlePhysicsUserSystemGroup`) and **`ElapsedTime`** (accumulated physics time). See [LittlePhysicsTimeComponent]({% link docs/guides/physics-singleton/little-physics-time-component/index.md %}) for field details and usage.
 
 ## What to read next
 
