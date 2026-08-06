@@ -76,7 +76,7 @@ Inside **`LittlePhysicsUserSystemGroup`**, prefer the package job interfaces. Th
 myBodiesJob.ScheduleAndChain(ref state, structures, ref simulation);
 ```
 
-See [Custom jobs]({% link docs/guides/custom-jobs/index.md %}) and [Import workflow]({% link docs/guides/custom-jobs/import-workflow/index.md %}) for group placement.
+See [Custom job interfaces]({% link docs/guides/custom-jobs/using-custom-job-interfaces/index.md %}) for **`ScheduleAndChain`** usage, and [Import workflow]({% link docs/guides/custom-jobs/import-workflow/index.md %}) for group placement.
 
 ## Read-only access
 
@@ -88,17 +88,10 @@ int count = SystemAPI.GetSingleton<SimulationDataComponent>().ActiveBodiesCount;
 
 The sample **`PerformanceOutputPresenter`** uses this pattern to display active body statistics.
 
-## Lifecycle within one frame
-
-```
-LateSimulation  →  Import sets ActiveBodiesCount, chains import jobs on PhysicsJobHandle
-FixedStep       →  Each substep: internal systems + user jobs extend PhysicsJobHandle
-Simulation      →  Export waits on PhysicsJobHandle, then writes components back
-```
-
 ## Related
 
 - [PhysicsReadyTag]({% link docs/guides/physics-singleton/physics-ready-tag/index.md %}) — gate systems until bootstrap finishes
 - [BodiesList]({% link docs/guides/physics-singleton/bodies-list/index.md %}) — native body pool filled during import
+- [Custom job interfaces]({% link docs/guides/custom-jobs/using-custom-job-interfaces/index.md %}) — **`ScheduleAndChain`** and **`PhysicsJobHandle`**
 - [Pipeline — Chaining jobs with PhysicsJobHandle]({% link docs/pipeline/index.md %}#chaining-jobs-with-physicsjobhandle)
 - [How it works — Import]({% link docs/how-it-works/index.md %}#import)
