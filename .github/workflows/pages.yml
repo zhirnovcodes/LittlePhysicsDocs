@@ -1,0 +1,64 @@
+# Build and deploy this Jekyll site to GitHub Pages.
+#
+# Why not actions/jekyll-build-pages?
+# That action uses the restricted github-pages gemset and cannot install the
+# gem-based just-the-docs theme from this Gemfile. The approach below matches
+# the official Just the Docs template (ruby/setup-ruby + bundle exec jekyll
+# build + actions/deploy-pages) so CI and local builds use the same gems.
+#
+# Action versions follow just-the-docs/just-the-docs-template (as of 2026).
+# Bump major tags when updating; check:
+#   https://github.com/just-the-docs/just-the-docs-template/blob/main/.github/workflows/pages.yml
+
+name: Deploy Jekyll site to Pages
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+          cache-version: 0
+
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v6
+
+      - name: Build with Jekyll
+        run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
+        env:
+          JEKYLL_ENV: production
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v5
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

@@ -1,0 +1,49 @@
+# =============================================================================
+# PLACEHOLDERS — search for "PLACEHOLDER" or update these three first:
+#   1. title
+#   2. url / baseurl
+#   3. aux_links (Asset Store + GitHub)
+# =============================================================================
+
+# PLACEHOLDER: site title shown in the header and browser tab
+title: My Physics Package Docs
+description: Documentation for a Unity Asset Store physics package.
+
+theme: just-the-docs
+
+# PLACEHOLDER: project-site URL pieces
+# Live URL will be: https://USERNAME.github.io/REPO-NAME/
+# - url:     your GitHub Pages host (user or org)
+# - baseurl: must start with / and match the repository name exactly
+# Example: repo "my-physics-package-docs" → baseurl: "/my-physics-package-docs"
+# For a user/org site (username.github.io repo), set baseurl to "" (empty).
+url: "https://USERNAME.github.io"
+baseurl: "/REPO-NAME"
+
+# Built-in Just the Docs search (indexes page content and front matter, including tags)
+search_enabled: true
+
+# Navigation: pages without nav_order are sorted alphabetically by title.
+# Override per page with front matter, e.g. nav_order: 2
+# Optional case folding: nav_sort: case_insensitive
+# (Just the Docs does not use a "by title" enum — title sort is the default.)
+
+# PLACEHOLDER: upper-right header links
+aux_links:
+  "Asset Store":
+    - "https://assetstore.unity.com/packages/slug/PLACEHOLDER"
+  "GitHub":
+    - "https://github.com/USERNAME/REPO-NAME"
+
+aux_links_new_tab: true
+
+# Exclude build/vendor paths from the site
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+  - README.md
