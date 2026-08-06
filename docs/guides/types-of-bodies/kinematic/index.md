@@ -87,7 +87,7 @@ When a kinematic trigger overlaps another body, collision slots contain contact 
 
 ## Runtime creation
 
-Use [`KinematicBodyBuilder`]({% link docs/guides/builders/kinematic-body-builder/index.md %}) with `.AsRigid()` or `.AsTrigger(updateInterval)` for runtime spawning.
+Use [`KinematicBodyBuilder`]({% link docs/guides/builders/kinematic-body-builder/index.md %}) with `.AsRigidBody(...)` or `.AsTrigger(updateInterval)` for runtime spawning.
 
 ## Related
 

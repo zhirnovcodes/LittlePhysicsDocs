@@ -75,7 +75,7 @@ Dynamic and kinematic bodies **move** through the map each substep (or on trigge
 
 ## Runtime creation
 
-Use [`StaticBodyBuilder`]({% link docs/guides/builders/static-body-builder/index.md %}) with `.AsRigid()` or `.AsTrigger()` for runtime spawning.
+Use [`StaticBodyBuilder`]({% link docs/guides/builders/static-body-builder/index.md %}) with `.AsRigidBody(...)` or `.AsTrigger()` for runtime spawning.
 
 ## Related
 
