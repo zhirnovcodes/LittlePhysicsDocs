@@ -1,0 +1,106 @@
+﻿Public API of **`com.ivancodes.littlephysics`** (`LittlePhysics` namespace):
+
+
+## Systems & system groups
+
+
+| Type | Kind |
+|------|------|
+| `LittlePhysicsBootstrapSystem` | `ISystem` | - internal system. Creates all data structures for physics, settings and all other necessary components. Creates PhysicsReadyTag at the very end to signal physics being ready to use for other systems
+| `PairsDebugSystem` | `ISystem` | - internal system - builds a debug widow in windows/little physics/ debug window
+| `LittlePhysicsUserSystemGroup` | `ComponentSystemGroup` | - group for user defined physics calculations. Runs inside the inner physics loop in fixed update. after collision calculations, but before the system populates velocities into objects’ velocity data. It is recommended to use custom job interfaces inside this group. If you want to use unity job interfaces (IJob, IJobParallelFor), please read How to write custom user jobs section
+| `LittlePhysicsUserImportGroup` | `ComponentSystemGroup` | Runs in late update. inside it has a system LittlePhysicsInternalImportGroup that imports all objects data from components into data structures. Depending on whether you want to change data in component before import, or in a custom data structure with data filled already, you can run your job before or after LittlePhysicsInternalImportGroup. Use Physics Job Handle to schedule your jobs.
+| `LittlePhysicsUserExportGroup` | `ComponentSystemGroup` | - runs on simulation system group after fixed update group. inside it has LittlePhysicsInternalExportGroup  that writes data from physics data structures into components. order your custom systems relative to LittlePhysicsInternalExportGroup depending on if you want to use data structures, or components. Use Physics Job Handle to schedule your jobs.
+
+
+
+
+## Authoring (`MonoBehaviour`)
+
+
+- `DynamicBodyAuthoring` - 
+- `KinematicBodyAuthoring` (+ nested `ColliderType`)
+- `StaticBodyAuthoring` (+ nested `ColliderType`)
+- `SurfaceBodyAuthoring` (+ nested `ColliderType`)
+- `GravitySourceAuthoring`
+- `PhysicsSettingsAuthoring`
+- `PhysicsVelocityAuthoring`
+- `SpacialMapAuthoring`
+
+
+## Components / ECS data
+
+
+- `PhysicsBodyComponent`, `PhysicsBodyUpdateComponent`
+- `PhysicsVelocityComponent`
+- `PhysicsReadyTag`
+- `PhysicsFixedSettingsComponent`, `PhysicsVariableSettingsComponent`
+- `PhysicsSettingsBlobAsset`, `EnvironmentSettings`, `CollisionCheckSettings`
+- `SpacialMapSettingsComponent`
+- `PhysicsMapRandomComponent`
+- `CollisionSurfaceComponent`
+- `SphericalGravitySourceComponent`, `DirectionalGravitySourceComponent`
+- `PhysicsLodData`, `PhysicsLodElement`
+- `LittlePhysicsTimeComponent`
+- `SimulationDataComponent`, `PhysicsStructuresComponent`
+- `CollisionMapSingleton`, `CollisionsSingleton`
+- `CameraData`
+
+
+## Body data / collision results
+
+
+- `PhysicsBodyData`, `RigidbodyData`, `VelocityData`
+- `CollisionData`, `SurfaceCollisionData`
+- `BodyCollisionResult`, `IntersectionData`
+- `LineCastResult`, `CastFilter` (+ nested `BodyTypes`)
+- `LinecastIterator`, `TraverseLineIterator`, `AABBTraverseIterator`
+
+
+## Builders
+
+
+- `DynamicBodyBuilder`
+- `KinematicBodyBuilder`
+- `StaticBodyBuilder`
+
+
+## Shapes / geometry
+
+
+- `Sphere`, `Capsule`, `SimpleBox`, `SimplePlane`, `InverseSphere`, `SphericalCone`
+- `Line`, `AABB`, `Grid3D`, `SpacialMap`, `Rectangle`, `PositionData`
+- `ListsArray<T>` (+ nested `Iterator`)
+
+
+## Job interfaces
+
+
+- `IBodiesJob` (+ `IRead`, `IWrite`, `IReadIndex`, `IWriteIndex`)
+- `ICollisionJob` (+ `IReadBody`, `IWriteBody`, `IReadBodies`, `IWriteBodies`, `IEntities`)
+- `ISurfaceJob` (+ `IReadBody`, `IWriteBody`, `IEntity`)
+- `ILineCastJob` (+ `IReadBody`, `IWriteBody`)
+
+
+## Enums
+
+
+- `BodyType`, `ColliderType`, `ShapeType`, `GravitySourceType`, `PushOutType`
+
+
+## Utility classes
+
+
+- `CollisionMethods` (+ nested shape helpers)
+- `PhysicsCastExtensions`, `SpacialMapExtensions`, `MapExtensions`, `Grid3DExtensions`
+- `PhysicsSettingsExtensions`, `PhysicsDebug`, `LittlePhysicsPerformance`
+- `PhysicsLodDataList`
+- Job schedule helpers: `IBodies*Extensions`, `ICollision*Extensions`, `ISurface*Extensions`, `ILineCast*Extensions`
+- Jobs: `ClearBodiesJob`, `ImportPhysicsDataJob`
+
+
+## Editor (public)
+
+
+- Editors: `DynamicBodyEditor`, `KinematicBodyEditor`, `StaticBodyEditor`, `SurfaceBodyEditor`, `GravitySourceEditor`, `SpacialMapEditor`, `PhysicsSettingsAuthoringEditor`
+- Drawers/helpers: `PhysicsLodDataDrawer`, `PhysicsLodDataListDrawer`, `PhysicsLodDataDrawHelper`, `LodDrawConfig`, `EditorShapeDrawer`

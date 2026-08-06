@@ -1,0 +1,346 @@
+﻿Welcome to Little Physics!
+A Unity ECS Physics package.
+With only supporting spheres as dynamic object, ability to set up different limits for simulation properties, setting different values for that limit for different LOD, and using multithreading + burst - makes this package work for up to 1,000,000 units at the same time.
+That comes with the cost of losing determinism for a large simulation, which makes this package good for simulating crowds, physical particles, liquids. 
+
+
+Features:
+* deep set up - setting up simulation variables for different types of simulations
+* LOD (up to 4 levels)
+* Speed up, speed down and pause the simulation
+* Dynamic, static, kinematic and triggers are supported
+* Gravity - directional and radial
+* Frictions 
+* Surface objects - each object in the simulation will be calculated against this one each frame, whereas other objects might skip each other
+* Substeps - can split a frame into X for better penetration and collision calculations and determinism (up to 4)
+* Dynamic objects () can be spheres only, kinematics and static can be spheres and capsules, surfaces can be all the above + some primitive shapes like simple plane, box, reverse sphere
+
+
+Known limitations
+* By setting up loose settings system looses its determenism, since it was designed for simulations where this is acceptable. LOD was designed to support higher determenism when camera is at closer positions to the objects
+* Max amount of entities is set in settings for better memory management. System ignores all the excessive entities
+* Only dynamic spheres - this limitation was brought to simplify calculations and production time. Also to decrease the memory of objects shapes data, which also affects performance
+* Physics calculations happen in the limited space called Spacial Map (more on that later) - size, position, and cells count are set by user. Objects outside the map still a subject to surface collisions and gravity, but not to object to object collisions
+* Time scales supported values for now are 0,1, 2, 4
+
+
+Quick start
+* After creating scene and subscene on it, add PhysicsSettingsAuthoring
+* Add Spacial Map Authoring and change its size / cell size / entity position to fill the space of simulation (toggle “should draw in editor” to see grid in scene editor)
+* Add Gravity Authoring if needed. Select gravity type
+* Add Surface Authoring if needed. Select surface type 
+* Add physical objects  add Kinematic/Static or Dynamic Body Authoring
+* Run the simulation
+
+
+* You can install samples that goes with package. Note that they require entities. graphics to be install. Editor will show a popup asking to install graphics once after samples installation
+
+
+How it works
+* Full pipeline scheme is below
+* Bootstrap system runs once on Initialization step. Creates data structures, settings, and necessary components. 
+* Import System counts bodies count and collects entities with Kinematic/Static or Dynamic Body Authoring on late update and puts them into native data structure, created on bootstrapper, stored in unmanaged memory pool. Gives entity a unique index for the course of one pipeline loop
+* then on fixed update system starts an internal loops - one for each Substep count and one for time scale (e.g with time scale 2 and subscteps count 2 system runs 4 times each fixed update)
+* in each loop system will
+   * calculates gravity impact on dynamic objects, as well as friction with surface
+   * fill spacial map with entities - a key value pair where each key is a cell index, and value is an object index in a cell 
+   * collects unique pairs into a separate internal structures
+   * For each pair calculates actual intersection for dynamic and kinematic objects, and collision data for dynamic objects
+   * calculates velocity and push out power based with other objects based on collisions
+   * calculates collison and push out force of all dynamic objects with surface 
+   * performs user defined operations
+   * populates velocity into position
+* after fixed update Export system returns calculated data from native structures back to physics and transform and velocity components
+
+
+
+
+Types of bodies
+* Dynamic body - body affected by gravity, friction, surface and per-object collisions. Can be only sphere shapes.
+
+
+* Kinematic - Rigid body - affects Dynamic body. Does not get affected by gravity, or collision forces. Does not get affected by physics velocities. Updated in map each step of the simulation. Can be spheres and capsules.
+* Kinematic - Trigger - Does not physically affect any objects. Updated in map once in Trigger Update Interval. Checks for intersections with dynamic, kinematic, static and triggers. Can be spheres and capsules.
+* Static - Rigid body - affects Dynamic bodies. Does not affected by gravity, or collision forces. Does not get affected by physics velocities. Updated in map once after being created. Can be spheres and capsules.
+* Static - Trigger - Does not physically affect any objects. Updated in map once after being created. Checks for intersections with dynamic and kinematic objects. Can be spheres and capsules.
+* Surface - object that does collisions calculation with all dynamic objects in the simulation each frame. As well as intersection calculations with all kinematic triggers.
+
+
+Physics Velocity authoring
+made to add a velocity for an object on the start. Only valid for dynamic objects
+        
+Physics Singleton 
+Has a set of components used in physics pipeline
+* PhysicsReadyTag - created at the very end of the bootrapper. Signals the end of setting up the physics. Can be used in OnCreate - require for update in custom systems
+* PhysicsFixedSettingsComponent - Has blob asset with fixed setting set up by Physics Settings authoring
+* PhysicsVariableSettingsComponent - has variable settings set up with Physics Settings authoring
+* SimulationDataComponent - has JobHandle and Bodies count of the current simulation step.
+* PhysicsStructuresComponent - contains public data structures used in calculation of collisions. These structures are:
+*          NativeArray<PhysicsBodyData> BodiesList; - bodies data. Filled in [Import System]. Has count = SimulationDataComponent.BodiesCount
+
+
+         public NativeArray<Random> Randoms; - Randoms used for each body. Has count = SimulationDataComponent.BodiesCount
+
+
+         public NativeHashMap<Entity, uint> EntitiesMap - Maps from entity to body index. Body index is its index in BodiesList
+
+
+        public CollisionMapSingleton CollisionMap;
+
+
+        public CollisionsSingleton Collisions;
+CollisionMapSingleton:
+
+
+   *          public ListsArray<uint> DynamicMap; - has indices of dynamic and kinematic (both rigid and triggers) objects on the map. The key would be an index of a cell. Index is calculated with a 1D to a 4D index (3 spacial coordinates of a cell + index within a cell. Cell might have up to Settings. MaxEntitiesInCell entities)
+   *          public ListsArray<Entity> StaticMap; - has static objects’ entities. The key would be an index of a cell. Index is calculated with a 1D to a 4D index (3 spacial coordinates of a cell + index within a cell. Cell might have up to Settings. MaxEntitiesInCell entities)
+CollisionsSingleton:
+   * public NativeArray<SurfaceCollisionData> SurfaceCollisionMap; - data of the collision of each object to surface. Key - body index. Has count = SimulationDataComponent.BodiesCount
+
+
+   *     public struct SurfaceCollisionData
+   *     {        public bool IsColliding; -  True when the body contacts a surface.
+
+
+   *         public float3 ContactPoint - Contact point on the surface
+   *         public float3 Normal - normal on the surface
+   *     }
+   *    *  public ListsArray<CollisionData> CollisionDataMap; - list array of object to obect collision. Array index (outer) is body index. Has count = SimulationDataComponent.BodiesCount. List index (inner index) is an index of body’s collision. Each body might have up to settings.MaxCollisionsPerEntity collisions
+
+
+  public struct CollisionData
+    {
+        /// <summary>
+        /// True when this slot contains a valid collision.
+        /// </summary>
+        public bool HasValue;
+        /// <summary>
+        /// Index of the other body in the pair.
+        /// </summary>
+        public uint OtherIndex;
+        /// <summary>
+        /// Contact geometry field.
+        /// </summary>
+        public float3 ContactPoint;
+        public float3 LinearVelocity;
+        public float3 AngularVelocity;
+        /// <summary>
+        /// Contact geometry field.
+        /// </summary>
+        public float3 Normal; / /normal on the surface of main object of collision
+        /// <summary>
+        /// Raw overlap depth between the shapes.
+        /// </summary>
+        public float PenetrationDepth;
+        /// <summary>
+        /// Per-body push-out weight from resolution.
+        /// </summary>
+        public float PushOutWeight;
+    }
+
+
+
+
+    /// <summary>
+    /// Simulation-side body record held in BodiesList.
+    /// </summary>
+    public struct PhysicsBodyData
+    {
+        public Entity Main; - /// Main or root entity for this body. In case of the kinematic or static trigger can be a parent entity
+        public int Layer; - same value as unity layer
+        public int LodIndex; - value set by lod definition job that calculates objects’ distance to the camera (see LOD)
+
+
+        public bool IsTrigger; - Whether the body is a trigger. can be set to true for kinematic and static bodies
+        public BodyType BodyType;
+        public ShapeType ShapeType;
+
+
+
+
+        public float TimeElapsed; -         Update cadence: TimeElapsed == -1 (combined with IsStatic) fires once; otherwise
+        // cycles 0 -> Interval -> 0, firing on the tick it reads 0. Interval == 0 fires every tick.
+
+
+        public float Interval; - Update interval for this body.
+
+
+        public PositionData PositionData; - scale, position, Up direction (for capsules) and rotation value that should be returned to dynamic objects after calculations. 
+        /// <summary>
+        /// 
+        /// </summary>
+        public VelocityData VelocityData; - Current linear and angular velocity.. Only filled for dynamic objects
+        public RigidbodyData RigidbodyData; - mass of the objects, bounciness (how much dynamic objects will bounce off that one), hardness (how fast the object will push out the other), friction (how fast speed lost will happen in the collision) , angular drag - how fast dynamic object looses angular momentum when in contact with that object
+
+
+        public bool IsStatic    => BodyType == BodyType.Static;
+        /// <summary>
+        /// True when BodyType is Kinematic.
+        /// </summary>
+        public bool IsKinematic => BodyType == BodyType.Kinematic;
+        /// <summary>
+        /// True when BodyType is Dynamic.
+        /// </summary>
+        public bool IsDynamic   => BodyType == BodyType.Dynamic;
+    }
+
+
+Spacial map
+An area on the scene divided into cubic cells where physics collisions simulation of object to object happens.
+Set by spacial map authoring. Toggle Should draw in editor to see a map in scene editor window
+Position is objects position. 
+
+
+
+
+
+
+GravitySource Authoring
+Gives an information about the gravity source
+Directional - directed in the gravity object’s “Down” direction (see arrow in scene editor window)
+Radial - emulates gravity directed into a spherical shape on the scene. Game object scale affects gravity force - it forms a circle in space (painted in scene editor). The closer object gets to that sphere the higher pulling force becomes
+
+
+Physics Settings Authoring
+
+
+
+
+LOD property (Level of detail)
+Simulation allows you to change system determenism based on objects distance to the camera
+Use Add / remove buttons to add or remove LOD levels
+You can see levels in scene editor colored in the same colors as in property window
+Last level will always be default - outside of all possible ranges
+you can change range of a LOD element to set how far it should be from the camera
+You can set up vision angle to only include objects within selected angle view. It is recommended to select a 360 degree angle as in this case it simplifies LOD indexing of objects.
+
+
+Lower you see a table of properties and their different time scale values
+each property has their values for a time scale 1, 2 and 4 (x1,x2,x4)
+
+
+that what each property mean:
+DynamicsInCells - how many dynamic and kinematic objects can be in one cell of the map? Imagine 10 objects landing in the same cell. If this value set to 4, only 4 of them will be calculated among each other for calculations/intersections in one iteration
+StaticInCells - same here, but with static objects. Set it to 0 if your project does not have static objects
+
+
+CellPerEntity - when object is added to the spacial map, it takes x*y*z cells based on its size and map cell size.  To keep performance and memory consistent this value limits the amount of cells each object can occupy in one frame. In case if object takes more cells - cells taken randomly in amount of equal or less than CellPerEntity. Only valid for dynamic and kinematic objects since static objets are only added once in map
+
+
+PairPerEntity - after objects are added to the map, the system needs to define a unique set of pairs of objects for further calculations. By going through each cell of the map, it collects found in that cell pairs of entitles, checks if they haven’t yet been added to the map, and adds them to an internal map of pairs. For each entity there can only be PairPerEntity pairs
+
+
+CollisionPerEntity - after pairs amount is defined system should do intersection/collision calculations. These are the most heavy operations in the whole system, so for lower LODs you want to keep that number lower. intersection/collsion detection will only happen with found pairs on the previous step
+
+
+LittlePhysicsTimeComponent
+use this component to get the information about time in little physics simulation world, as well as for changing time scale of the simulation
+TimeScale - time scale of the simulation
+can only be 0 (pause), 1, 2, and 4
+DeltaTime - read only - can be used inside LittlePhysicsUserSystemGroup for a real delta time with regards to time scale and system substeps
+TimeElapsed - read only  - time elapsed from the start of the simulation
+
+
+PairsDebugWindow
+system supports a debug window that helps you see in runtime a table of entities and their pairs/collision data
+
+
+columns are
+// 
+
+
+Custom job groups
+
+
+| `LittlePhysicsBootstrapSystem` | `ISystem` | - internal system. Creates all data structures for physics, settings and all other necessary components. Creates PhysicsReadyTag at the very end to signal physics being ready to use for other systems
+| `PairsDebugSystem` | `ISystem` | - internal system - builds a debug widow in windows/little physics/ debug window
+| `LittlePhysicsUserSystemGroup` | `ComponentSystemGroup` | - group for user defined physics calculations. Runs inside the inner physics loop in fixed update. after collision calculations, but before the system populates velocities into objects’ velocity data. It is recommended to use custom job interfaces inside this group. If you want to use unity job interfaces (IJob, IJobParallelFor), please read How to write custom user jobs section
+| `LittlePhysicsUserImportGroup` | `ComponentSystemGroup` | Runs in late update. inside it has a system LittlePhysicsInternalImportGroup that imports all objects data from components into data structures. Depending on whether you want to change data in component before import, or in a custom data structure with data filled already, you can run your job before or after LittlePhysicsInternalImportGroup. Use Physics Job Handle to schedule your jobs.
+| `LittlePhysicsUserExportGroup` | `ComponentSystemGroup` | - runs on simulation system group after fixed update group. inside it has LittlePhysicsInternalExportGroup  that writes data from physics data structures into components. order your custom systems relative to LittlePhysicsInternalExportGroup depending on if you want to use data structures, or components. Use Physics Job Handle to schedule your jobs.
+
+
+Custom jobs interfaces:
+[for each - interface definition, extension execute methods and a code example]
+It is recommended to use these interfaces for using physics pipeline. You can also write your own jobs by following guidelines below
+
+
+
+
+- `IBodiesJob`
+each job instance works with physics body data
+this one and nested - runs on parallel threads
+each one has to be executed in LittlePhysicsUserSystemGroup
+[for next one add description, definition and a code example]
+IBodiesJob.IRead
+IBodiesJob.IWrite
+IBodiesJob.IReadIndex
+IBodiesJob.IWriteIndex
+
+
+
+
+- `ICollisionJob` 
+each job instance runs on object to object collision data
+this one and nested - runs on parallel threads
+each one has to be executed in LittlePhysicsUserSystemGroup
+[for next one add description, definition and a code example]
+ICollisionJob.IReadBody
+ICollisionJob.IWriteBody
+ICollisionJob.IReadBodies
+ICollisionJob.IWriteBodies
+ICollisionJob.IEntities
+
+
+
+
+
+
+- `ISurfaceJob`
+each job instance runs on object to surface collision data
+this one and nested - runs on parallel threads
+each one has to be executed in LittlePhysicsUserSystemGroup
+[for next one add description, definition and a code example]
+ISurfaceJob.IReadBody
+ISurfaceJob.IWriteBody
+ISurfaceJob.IEntities
+
+
+- `ILineCastJob` (+ `IReadBody`, `IWriteBody`)
+performs line cast job on a single helper thread
+
+
+ILineCastJob.IReadBody
+ILineCastJob.IWriteBody
+
+
+Using custom job interface
+[add to each one a code example ]
+
+
+
+
+Import
+you can make your adjustments to the import of the bodies into a LittlePhysicsUserImportGroup
+you can schedule system before the LittlePhysicsInternalImportGroup to alter components, or after LittlePhysicsInternalImportGroup to read or alter data structures like bodies list. In this case please use physcis job handle from the SimulationDataComponent
+
+
+
+
+
+
+Export
+LittlePhysicsUserExportGroup runs in simulation group after all physics calculations 
+
+
+Inside pipeline
+for each job it is recommended to use Data structures from PhysicsStructuresComponent, not components lookups
+use LittlePhysicsUserSystemGroup
+
+
+LittlePhysicsUserSystemGroup
+
+
+builders
+- `DynamicBodyBuilder` - builds a dynamic body
+- `KinematicBodyBuilder`- builds a kinematic body
+- `StaticBodyBuilder` - builds a static body

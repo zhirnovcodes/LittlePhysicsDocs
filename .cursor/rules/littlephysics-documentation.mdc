@@ -1,0 +1,180 @@
+---
+description: Rules for writing Little Physics documentation from reference sources and package code
+alwaysApply: true
+---
+
+# Little Physics documentation
+
+This repo (`LittlePhysicsDocs`) documents the Unity package **Little Physics** (`com.ivancodes.littlephysics`).
+
+## Reference sources (read before writing)
+
+Use these files in `.cursor/files/` plus the package code. **Do not edit the reference files from this repo** — they are author notes; published docs live under `docs/`.
+
+| File | Role |
+|------|------|
+| `.cursor/files/Little Physics Documentation - doc.txt` | **Main prose source** — product pitch, features, limitations, quick start, pipeline narrative, body types, LOD, spatial map, singleton data structures, custom job groups, builders |
+| `.cursor/files/Little Physics Documentation - pipeline.pdf` | **Pipeline diagram** — system-group hierarchy, update order, which groups are public vs internal |
+| `.cursor/files/Little Physics Documentation - public.txt` | **Public API index** — exhaustive list of types to document (authorings, components, job interfaces, builders, enums, editor tools) |
+
+Package path (implementation source of truth for names, defaults, and behavior):
+
+`C:\Work\LittlePhysicsSystem\Packages\com.ivancodes.littlephysics`
+
+### Source priority when they disagree
+
+1. **Package `.cs` files** — field names, defaults, API signatures, system group names
+2. **`pipeline.pdf`** — execution order and group nesting
+3. **`doc.txt`** — user-facing explanations and feature descriptions
+4. **`public.txt`** — coverage checklist (ensure every listed public type gets a doc page or section)
+
+Example: `doc.txt` / `public.txt` say `LittlePhysicsUserImportGroup` — code and `pipeline.pdf` use `LittlePhysicsImportGroup`. Document the **code name**.
+
+## Product facts (from reference sources)
+
+- **Display name:** Little Physics
+- **Unity:** 6000.0+ (Unity 6). Not compatible with Unity 2022.
+- **Entities:** `com.unity.entities` 1.4.8
+- **Namespace:** `LittlePhysics`
+- **Scale:** up to ~1,000,000 units (spheres-only dynamic bodies, LOD, Burst, multithreading)
+- **Trade-off:** loose settings reduce determinism — suited for crowds, particles, liquids
+- **Time scale:** `0` (pause), `1`, `2`, `4` only (`LittlePhysicsTimeComponent`)
+- **Substeps:** 1–4 per fixed update (`PhysicsSettingsAuthoring`)
+- **Samples:** Package Manager → Little Physics → **All Samples** (5 scenes; requires Entities.Graphics)
+
+### Features to highlight
+
+Deep simulation tuning, LOD (up to 4 levels), pause/slow/fast, dynamic/static/kinematic/triggers, directional + radial gravity, friction, surface collisions (every dynamic body vs surfaces each frame), substeps.
+
+### Known limitations (document honestly)
+
+- Determinism drops with loose LOD/settings; closer camera ranges improve it
+- `MaxEntitiesCount` cap — excess entities ignored
+- **Dynamic bodies: spheres only**; kinematic/static: spheres + capsules; surfaces: spheres, capsules, simple plane, box, reverse sphere
+- Object-to-object collisions only inside the **Spatial Map** bounds; outside map still gets gravity + surface collision
+- Time scale limited to 0, 1, 2, 4
+
+## Site structure
+
+Jekyll + Just the Docs theme. Pages live under `docs/`.
+
+| Section | Path | Purpose |
+|---------|------|---------|
+| Home | `index.md` | Product overview, links to main sections |
+| Getting Started | `docs/getting-started.md` | Install, requirements, quick start (from `doc.txt`) |
+| How it works | `docs/how-it-works.md` (future) | Pipeline narrative + diagram from `pipeline.pdf` |
+| API Reference | `docs/api-reference/` | Authorings, components, job interfaces |
+| Guides (future) | `docs/guides/` | LOD, spatial map, triggers, linecast, samples, custom jobs |
+
+Add new API pages under `docs/api-reference/`. Update `docs/api-reference/index.md`. Cross-check new pages against `public.txt` so nothing public is missed.
+
+## Page front matter
+
+Every doc page needs:
+
+```yaml
+---
+title: Human-readable title
+layout: default
+nav_order: 2          # omit on child pages; use parent instead
+parent: API Reference # required for API child pages
+description: One sentence for search and SEO
+tags: [authoring, physics, dynamic-body]  # optional; indexed by search
+---
+```
+
+Use `has_children: true` and `permalink:` only on section index pages (see `docs/api-reference/index.md`).
+
+## File naming
+
+Convert C# type names to kebab-case filenames:
+
+| C# type | Doc file |
+|---------|----------|
+| `DynamicBodyAuthoring` | `docs/api-reference/dynamic-body-authoring.md` |
+| `PhysicsSettingsAuthoring` | `docs/api-reference/physics-settings-authoring.md` |
+| `ISurfaceJob` | `docs/api-reference/isurface-job.md` |
+
+Drop placeholder names like `rigidbody-component.md` / `collider-component.md` when replacing with real pages.
+
+## Authoring page template
+
+Each `*Authoring` page should include:
+
+1. **Summary** — from class `///` summary or `doc.txt` prose
+2. **When to use** — body type, shape constraints, trigger vs rigid (see `doc.txt` "Types of bodies")
+3. **Inspector fields** — table: Field | Type | Default | Description (verify in package source)
+4. **Inspector screenshot** — `assets/images/{kebab-name}-inspector.png`
+5. **Setup steps** — subscene, bake, play (from `doc.txt` quick start)
+6. **Related components** — internal links via `{% link docs/... %}`
+
+## Scripting / API pages
+
+Use `public.txt` as the coverage checklist. Document public extension points:
+
+**System groups (public):**
+- `LittlePhysicsUserSystemGroup` — mid-step custom logic (after collisions, before velocity → position)
+- `LittlePhysicsImportGroup` — late update import; order before/after `LittlePhysicsInternalImportGroup`
+- `LittlePhysicsExportGroup` — after fixed step; order before/after `LittlePhysicsInternalExportGroup`
+
+**Job interfaces** (run in `LittlePhysicsUserSystemGroup` unless noted):
+- `IBodiesJob` (+ `IRead`, `IWrite`, `IReadIndex`, `IWriteIndex`)
+- `ICollisionJob` (+ `IReadBody`, `IWriteBody`, `IReadBodies`, `IWriteBodies`, `IEntities`)
+- `ISurfaceJob` (+ `IReadBody`, `IWriteBody`, `IEntity`)
+- `ILineCastJob` (+ `IReadBody`, `IWriteBody`) — single-threaded
+
+**Builders:** `DynamicBodyBuilder`, `KinematicBodyBuilder`, `StaticBodyBuilder`
+
+**Key data:** `PhysicsBodyData`, `CollisionData`, `SurfaceCollisionData`, `PhysicsStructuresComponent`, `LittlePhysicsTimeComponent`
+
+Skip internal systems unless writing architecture docs — use `pipeline.pdf` for that section.
+
+## Body types (from doc.txt)
+
+| Type | Affected by | Shapes | Notes |
+|------|-------------|--------|-------|
+| Dynamic | gravity, friction, surface, object collisions | sphere only | |
+| Kinematic rigid | pushes dynamics | sphere, capsule | not affected by forces |
+| Kinematic trigger | intersection checks only | sphere, capsule | updated on trigger interval |
+| Static rigid | pushes dynamics | sphere, capsule | map updated once |
+| Static trigger | intersection checks | sphere, capsule | map updated once |
+| Surface | collides all dynamics each frame; kinematic triggers | plane, box, reverse sphere, etc. | |
+
+## Pipeline summary (from pipeline.pdf)
+
+```
+Initialization → LittlePhysicsBootstrapSystem
+LateSimulation → LittlePhysicsImportGroup (user → internal import)
+FixedStep → LittlePhysicsSystemGroup (loops: TimeScale × Substeps)
+  → Internal: gravity → friction → map → detection → velocity → surface
+  → LittlePhysicsUserSystemGroup (your systems)
+  → PhysicsVelocitySystem
+Simulation → LittlePhysicsExportGroup (internal export → user systems)
+```
+
+## Links, media, images
+
+- Internal links: `[Title]({% link docs/api-reference/foo.md %})` — never hard-code `baseurl`
+- Images: `![Alt]({{ site.baseurl }}/assets/images/foo.png)`
+- YouTube: `{% include youtube.html id="VIDEO_ID" %}`
+- Register new images in `assets/images/README.md`
+- Pipeline diagram: reproduce from `pipeline.pdf` as a mermaid or image on the How it works page
+
+## Writing rules
+
+- Use exact type names from code (`DynamicBodyAuthoring`, not "Rigidbody Component")
+- Pull feature/limitation prose from `doc.txt`; verify against code before publishing
+- Document subscene + baking workflow — ECS, not classic MonoBehaviour physics
+- Note co-dependencies (`PhysicsVelocityAuthoring` only on dynamic bodies)
+- Note warnings from source (velocity ignored on `SurfaceBodyAuthoring`)
+- For custom jobs: prefer package job interfaces; use `SimulationDataComponent` physics JobHandle for import/export scheduling
+- Replace `_config.yml` / `index.md` placeholders when publishing
+- Expand reference material — do not paste `doc.txt` verbatim into published pages
+
+## Local preview
+
+```bash
+bundle exec jekyll serve --baseurl ""
+```
+
+Open http://127.0.0.1:4000/ after changes.
