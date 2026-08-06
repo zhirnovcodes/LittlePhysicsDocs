@@ -8,6 +8,7 @@
 # PLACEHOLDER: site title shown in the header and browser tab
 title: Little Physics Docs
 description: Documentation for the Little Physics Unity ECS package.
+feedback_email: "ivanzhirnov170991@gmail.com"
 
 theme: just-the-docs
 
