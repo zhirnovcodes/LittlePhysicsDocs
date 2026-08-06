@@ -94,92 +94,80 @@ SimulationSystemGroup (after FixedStep)
 
 ## 5 Types of bodies
 
-`docs/guides/types-of-bodies.md` (or section index with children)
+`docs/guides/types-of-bodies/index.md`
 
 ### 5.1 Dynamic
 
-- Affected by gravity, friction, surface, object-to-object collisions
+`docs/guides/types-of-bodies/dynamic/index.md`
+
+- Body affected by gravity, friction, surface, and object-to-object collisions (doc.txt)
 - **Shapes:** sphere only
 - Authoring: `DynamicBodyAuthoring`
-- Optional initial velocity: `PhysicsVelocityAuthoring` (dynamic only)
+- Optional initial velocity: `PhysicsVelocityAuthoring` (dynamic only; see doc.txt *Physics Velocity authoring*)
 
-### 5.2 Kinematic — rigid
+### 5.2 Kinematic
 
-- Pushes dynamic bodies; not affected by gravity, collision forces, or physics velocities
-- Updated in spatial map **each simulation step**
+`docs/guides/types-of-bodies/kinematic/index.md`
+
+- **Rigid** — affects dynamic bodies; not affected by gravity, collision forces, or physics velocities; updated in spatial map each simulation step (`KinematicBodyAuthoring`, `IsTrigger = false`)
+- **Trigger** — no physical response; intersection checks on trigger update interval; checks dynamic, kinematic, static, and triggers (`KinematicBodyAuthoring`, `IsTrigger = true`)
 - **Shapes:** sphere, capsule
-- Authoring: `KinematicBodyAuthoring` (`IsTrigger = false`)
 
-### 5.3 Kinematic — trigger
+### 5.3 Static
 
-- No physical response; intersection checks only
-- Updated in map on **trigger update interval**
-- Checks intersections with dynamic, kinematic, static, and triggers
+`docs/guides/types-of-bodies/static/index.md`
+
+- **Rigid** — affects dynamic bodies; not affected by forces or velocities; added to spatial map once after creation (`StaticBodyAuthoring`, `IsTrigger = false`)
+- **Trigger** — no physical response; intersection checks only; added to map once; checks dynamic and kinematic objects (`StaticBodyAuthoring`, `IsTrigger = true`)
 - **Shapes:** sphere, capsule
-- Authoring: `KinematicBodyAuthoring` (`IsTrigger = true`)
 
-### 5.4 Static — rigid
+### 5.4 Surface
 
-- Pushes dynamic bodies; not affected by forces or velocities
-- Added to spatial map **once** after creation
-- **Shapes:** sphere, capsule
-- Authoring: `StaticBodyAuthoring` (`IsTrigger = false`)
+`docs/guides/types-of-bodies/surface/index.md`
 
-### 5.5 Static — trigger
-
-- No physical response; intersection checks only
-- Added to map **once** after creation
-- Checks intersections with dynamic and kinematic objects
-- **Shapes:** sphere, capsule
-- Authoring: `StaticBodyAuthoring` (`IsTrigger = true`)
-
-### 5.6 Surface
-
-- Collides with **all dynamic bodies every frame**
-- Intersection checks with kinematic triggers
+- Collisions with **all dynamic bodies every frame**; intersection checks with kinematic triggers (doc.txt)
 - **Shapes:** sphere, capsule, simple plane, box, reverse sphere, etc.
 - Authoring: `SurfaceBodyAuthoring`
 - Note: velocity on surface authoring is ignored
-
-### 5.7 Body type comparison table
-
-| Type | Forces | Map update | Shapes | Trigger mode |
-|------|--------|------------|--------|--------------|
-| Dynamic | yes | every step | sphere | — |
-| Kinematic rigid | no | every step | sphere, capsule | no |
-| Kinematic trigger | no | interval | sphere, capsule | yes |
-| Static rigid | no | once | sphere, capsule | no |
-| Static trigger | no | once | sphere, capsule | yes |
-| Surface | N/A (collider) | every frame vs dynamics | primitives + above | — |
 
 ---
 
 ## 6 Physics singleton (public components and structures)
 
-`docs/guides/physics-singleton.md` (or section index with children)
+`docs/guides/physics-singleton/index.md`
 
 Overview — singleton entity created by bootstrap; custom systems read/write via `SystemAPI.GetSingleton`.
 
 ### 6.1 PhysicsReadyTag
+
+`docs/guides/physics-singleton/physics-ready-tag/index.md`
 
 - Created at end of bootstrap; signal that physics is ready
 - Use `[RequireForUpdate(typeof(PhysicsReadyTag))]` in custom systems
 
 ### 6.2 PhysicsFixedSettingsComponent
 
+`docs/guides/physics-singleton/physics-fixed-settings-component/index.md`
+
 - Blob asset with fixed settings from `PhysicsSettingsAuthoring`
 - Related: `PhysicsSettingsBlobAsset`, `EnvironmentSettings`, `CollisionCheckSettings`
 
 ### 6.3 PhysicsVariableSettingsComponent
 
+`docs/guides/physics-singleton/physics-variable-settings-component/index.md`
+
 - Variable per-tick settings from `PhysicsSettingsAuthoring` (e.g. substeps count)
 
 ### 6.4 SimulationDataComponent
+
+`docs/guides/physics-singleton/simulation-data-component/index.md`
 
 - `ActiveBodiesCount` — bodies in current simulation step
 - `PhysicsJobHandle` — chain import / export / custom jobs
 
 ### 6.5 LittlePhysicsTimeComponent
+
+`docs/guides/physics-singleton/little-physics-time-component/index.md`
 
 - `TimeScale` — 0 (pause), 1, 2, 4 only
 - `DeltaTime` — read-only; scaled delta for use in `LittlePhysicsUserSystemGroup`
@@ -187,22 +175,32 @@ Overview — singleton entity created by bootstrap; custom systems read/write vi
 
 ### 6.6 PhysicsStructuresComponent
 
+`docs/guides/physics-singleton/physics-structures-component/index.md`
+
 Main native structures for collision pipeline.
 
 #### 6.6.1 BodiesList
+
+`docs/guides/physics-singleton/bodies-list/index.md`
 
 - `NativeArray<PhysicsBodyData>` — filled by import; count = `ActiveBodiesCount`
 - See **6.8 PhysicsBodyData**
 
 #### 6.6.2 Randoms
 
+`docs/guides/physics-singleton/randoms/index.md`
+
 - `NativeArray<Random>` — per-body random state; count = `ActiveBodiesCount`
 
 #### 6.6.3 EntitiesMap
 
+`docs/guides/physics-singleton/entities-map/index.md`
+
 - `NativeHashMap<Entity, uint>` — entity → body index in `BodiesList`
 
 #### 6.6.4 CollisionMapSingleton
+
+`docs/guides/physics-singleton/collision-map-singleton/index.md`
 
 Spatial broad-phase maps (cell key → body indices / entities).
 
@@ -213,12 +211,16 @@ Cell index: 1D → 4D (3 spatial cell coords + index within cell; up to `MaxEnti
 
 #### 6.6.5 CollisionsSingleton
 
+`docs/guides/physics-singleton/collisions-singleton/index.md`
+
 Per-body collision results.
 
 - **SurfaceCollisionMap** — `NativeArray<SurfaceCollisionData>` keyed by body index
 - **CollisionDataMap** — `ListsArray<CollisionData>` — per-body list of object-to-object collisions (up to `MaxCollisionsPerEntity`)
 
 ### 6.7 PhysicsBodyData
+
+`docs/guides/physics-singleton/physics-body-data/index.md`
 
 Simulation-side body record in `BodiesList`.
 
@@ -230,6 +232,8 @@ Simulation-side body record in `BodiesList`.
 
 ### 6.8 Supporting body / collision structs
 
+`docs/guides/physics-singleton/supporting-body-collision-structs/index.md`
+
 - **RigidbodyData** — `Mass`, `Bounciness`, `Friction`, `Hardness`, `AngularDrag`
 - **VelocityData** — `Linear`, `Angular`, `IsRotationBlocked`
 - **PositionData** — scale, position, up (capsules), rotation
@@ -237,6 +241,8 @@ Simulation-side body record in `BodiesList`.
 - **SurfaceCollisionData** — `IsColliding`, `ContactPoint`, `Normal`
 
 ### 6.9 Other public ECS components (singleton-related)
+
+`docs/guides/physics-singleton/other-public-ecs-components/index.md`
 
 - `PhysicsBodyComponent`, `PhysicsBodyUpdateComponent` — per-entity baked data
 - `PhysicsVelocityComponent` — dynamic velocity component
@@ -249,12 +255,16 @@ Simulation-side body record in `BodiesList`.
 
 ### 6.10 Spatial map
 
+`docs/guides/physics-singleton/spatial-map/index.md`
+
 - Concept — cubic cells; object-to-object collision region
 - Authoring: `SpacialMapAuthoring` → `SpacialMapSettingsComponent`
 - Types: `SpacialMap`, `Grid3D`, `AABB`
 - LOD table properties (see **6.11**): `DynamicsInCells`, `StaticInCells`, `CellPerEntity`, `PairPerEntity`, `CollisionPerEntity`
 
 ### 6.11 Physics settings and LOD
+
+`docs/guides/physics-singleton/physics-settings-and-lod/index.md`
 
 Authoring: `PhysicsSettingsAuthoring`
 
@@ -269,6 +279,8 @@ Authoring: `PhysicsSettingsAuthoring`
 
 ### 6.12 Gravity
 
+`docs/guides/physics-singleton/gravity/index.md`
+
 Authoring: `GravitySourceAuthoring`
 
 - **Directional** — along object's Down axis
@@ -278,7 +290,7 @@ Authoring: `GravitySourceAuthoring`
 
 ## 7 Pairs debug window
 
-`docs/guides/pairs-debug-window.md`
+`docs/guides/pairs-debug-window/index.md`
 
 - Menu: Window → Little Physics → debug window (`PairsDebugSystem` / `CollisionPairsDebugWindow`)
 - Runtime table of entities, pairs, and collision data
@@ -289,9 +301,11 @@ Authoring: `GravitySourceAuthoring`
 
 ## 8 Custom jobs
 
-`docs/guides/custom-jobs.md` (section index)
+`docs/guides/custom-jobs/index.md`
 
 ### 8.1 Custom job groups
+
+`docs/guides/custom-jobs/custom-job-groups/index.md`
 
 | Group | Update phase | User order | Purpose |
 |-------|--------------|------------|---------|
@@ -310,6 +324,8 @@ All parallel except `ILineCastJob`. Execute inside `LittlePhysicsUserSystemGroup
 
 #### 8.2.1 IBodiesJob
 
+`docs/guides/custom-jobs/ibodies-job/index.md`
+
 Per physics body; parallel.
 
 - `IBodiesJob.IRead`
@@ -319,6 +335,8 @@ Per physics body; parallel.
 - Extensions: `IBodiesJobExtensions`, `IBodiesReadExtensions`, `IBodiesWriteExtensions`, `IBodiesReadIndexExtensions`, `IBodiesWriteIndexExtensions`
 
 #### 8.2.2 ICollisionJob
+
+`docs/guides/custom-jobs/icollision-job/index.md`
 
 Per object-to-object collision slot; parallel.
 
@@ -331,6 +349,8 @@ Per object-to-object collision slot; parallel.
 
 #### 8.2.3 ISurfaceJob
 
+`docs/guides/custom-jobs/isurface-job/index.md`
+
 Per body surface collision; parallel.
 
 - `ISurfaceJob.IReadBody`
@@ -339,6 +359,8 @@ Per body surface collision; parallel.
 - Extensions: `ISurfaceJobExtensions`, `ISurfaceReadBodyExtensions`, `ISurfaceWriteBodyExtensions`, `ISurfaceEntityExtensions`
 
 #### 8.2.4 ILineCastJob
+
+`docs/guides/custom-jobs/ilinecast-job/index.md`
 
 Line cast; **single helper thread**.
 
@@ -349,20 +371,28 @@ Line cast; **single helper thread**.
 
 ### 8.3 Using custom job interfaces
 
+`docs/guides/custom-jobs/using-custom-job-interfaces/index.md`
+
 - Code examples per interface (schedule + system attribute)
 - Alternative: raw `IJob` / `IJobParallelFor` — see guidelines in doc.txt
 
 ### 8.4 Import workflow
+
+`docs/guides/custom-jobs/import-workflow/index.md`
 
 - `LittlePhysicsImportGroup` — before internal import: modify components; after: modify native structures
 - Related jobs: `ImportPhysicsDataJob`, `ClearBodiesJob`
 
 ### 8.5 Export workflow
 
+`docs/guides/custom-jobs/export-workflow/index.md`
+
 - `LittlePhysicsExportGroup` — runs after all fixed-step physics
 - Order relative to `LittlePhysicsInternalExportGroup` depending on components vs structures
 
 ### 8.6 Inside the pipeline
+
+`docs/guides/custom-jobs/inside-the-pipeline/index.md`
 
 - Use `LittlePhysicsUserSystemGroup` for mid-step logic
 - Read/write via `PhysicsStructuresComponent`, not entity component lookups when possible
