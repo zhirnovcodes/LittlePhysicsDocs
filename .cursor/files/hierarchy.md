@@ -19,7 +19,7 @@ Use this as the site nav outline. Slugs in parentheses are suggested future page
 
 ## 2 Getting Started
 
-`docs/getting-started.md`
+`docs/getting-started/index.md`
 
 - Requirements — Unity 6 (6000.0+), Entities 1.4.8, optional Entities.Graphics for samples
 - Install — Package Manager → `com.ivancodes.littlephysics`
@@ -37,7 +37,7 @@ Use this as the site nav outline. Slugs in parentheses are suggested future page
 
 ## 3 How it works
 
-`docs/how-it-works.md`
+`docs/how-it-works/index.md`
 
 - ECS + baking overview (authorings → components → native structures)
 - One-frame narrative (bootstrap → import → fixed-step loop → export)
@@ -54,7 +54,7 @@ Use this as the site nav outline. Slugs in parentheses are suggested future page
 
 ## 4 Pipeline
 
-`docs/pipeline.md`
+`docs/pipeline/index.md`
 
 - Pipeline diagram (from `pipeline.pdf`)
 - System group hierarchy
@@ -369,7 +369,7 @@ Line cast; **single helper thread**.
 - Extensions: `ILineCastJobExtensions`, `ILineCastReadBodyExtensions`, `ILineCastWriteBodyExtensions`
 - Related types: `LineCastResult`, `CastFilter`, `LinecastIterator`, `TraverseLineIterator`, `AABBTraverseIterator`
 
-### 8.3 Using custom job interfaces
+### 8.3 Custom job interfaces
 
 `docs/guides/custom-jobs/using-custom-job-interfaces/index.md`
 
@@ -401,13 +401,27 @@ Line cast; **single helper thread**.
 
 ## 9 Builders
 
-`docs/guides/builders.md`
+`docs/guides/builders/index.md`
 
 Runtime/spawn helpers for creating bodies without scene authorings.
 
-- **DynamicBodyBuilder** — build dynamic sphere bodies
-- **KinematicBodyBuilder** — build kinematic bodies (sphere, capsule)
-- **StaticBodyBuilder** — build static bodies (sphere, capsule)
+### 9.1 DynamicBodyBuilder
+
+`docs/guides/builders/dynamic-body-builder/index.md`
+
+- Build dynamic sphere bodies
+
+### 9.2 KinematicBodyBuilder
+
+`docs/guides/builders/kinematic-body-builder/index.md`
+
+- Build kinematic bodies (sphere, capsule)
+
+### 9.3 StaticBodyBuilder
+
+`docs/guides/builders/static-body-builder/index.md`
+
+- Build static bodies (sphere, capsule)
 
 ---
 
