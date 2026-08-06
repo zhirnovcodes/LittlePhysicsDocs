@@ -76,7 +76,7 @@ Inside **`LittlePhysicsUserSystemGroup`**, prefer the package job interfaces. Th
 myBodiesJob.ScheduleAndChain(ref state, structures, ref simulation);
 ```
 
-See [Custom job interfaces]({% link docs/guides/custom-jobs/using-custom-job-interfaces/index.md %}) for **`ScheduleAndChain`** usage, and [Import workflow]({% link docs/guides/custom-jobs/import-workflow/index.md %}) for group placement.
+See [IBodiesJob]({% link docs/guides/custom-jobs/ibodies-job/index.md %}) for **`ScheduleAndChain`** on package interfaces, [Custom job interfaces]({% link docs/guides/custom-jobs/using-custom-job-interfaces/index.md %}) for raw **`IJobParallelFor`** chaining, and [Import workflow]({% link docs/guides/custom-jobs/import-workflow/index.md %}) for group placement.
 
 ## Read-only access
 
@@ -92,6 +92,6 @@ The sample **`PerformanceOutputPresenter`** uses this pattern to display active 
 
 - [PhysicsReadyTag]({% link docs/guides/physics-singleton/physics-ready-tag/index.md %}) — gate systems until bootstrap finishes
 - [BodiesList]({% link docs/guides/physics-singleton/bodies-list/index.md %}) — native body pool filled during import
-- [Custom job interfaces]({% link docs/guides/custom-jobs/using-custom-job-interfaces/index.md %}) — **`ScheduleAndChain`** and **`PhysicsJobHandle`**
+- [Custom job interfaces]({% link docs/guides/custom-jobs/using-custom-job-interfaces/index.md %}) — raw **`IJobParallelFor`** and **`PhysicsJobHandle`**
 - [Pipeline — Chaining jobs with PhysicsJobHandle]({% link docs/pipeline/index.md %}#chaining-jobs-with-physicsjobhandle)
 - [How it works — Import]({% link docs/how-it-works/index.md %}#import)

@@ -81,7 +81,7 @@ One entry per body index in **`SurfaceCollisionMap`**. **`SurfaceCollisionSystem
 | **`ContactPoint`** | **`float3`** | Contact point on the surface |
 | **`Normal`** | **`float3`** | Outward surface normal at the contact |
 
-**`FrictionSystem`** reads **`IsColliding`** and **`Normal`** when applying surface friction. Custom [`ISurfaceJob`]({% link docs/guides/custom-jobs/isurface-job/index.md %}) callbacks receive this struct per body index — always check **`IsColliding`** before modifying velocity.
+**`FrictionSystem`** reads **`IsColliding`** and **`Normal`** when applying surface friction. Custom [`ISurfaceJob`]({% link docs/guides/custom-jobs/isurface-job/index.md %}) callbacks receive this struct per body index — only colliding entries invoke **`Execute`** (body variants filter on **`IsColliding`** automatically).
 
 ## CollisionData
 

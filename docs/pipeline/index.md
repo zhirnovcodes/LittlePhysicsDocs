@@ -269,5 +269,6 @@ Simulation (after all fixed-step work)
 | Concepts — LOD, spatial map, one-frame narrative | [How it works]({% link docs/how-it-works/index.md %}) |
 | Import / export / mid-step workflows | [Custom jobs]({% link docs/guides/custom-jobs/index.md %}) |
 | `BodiesList`, collision maps, singleton access | [Physics singleton]({% link docs/guides/physics-singleton/index.md %}) |
-| `IBodiesJob`, `ICollisionJob`, `ISurfaceJob`, `ILineCastJob` | [Custom job interfaces]({% link docs/guides/custom-jobs/using-custom-job-interfaces/index.md %}) |
+| `IBodiesJob`, `ICollisionJob`, `ISurfaceJob`, `ILineCastJob` | [Custom jobs]({% link docs/guides/custom-jobs/index.md %}) |
+| Raw `IJob` / `IJobParallelFor` against native buffers | [Custom job interfaces]({% link docs/guides/custom-jobs/using-custom-job-interfaces/index.md %}) |
 | Body types and shape constraints | [Types of bodies]({% link docs/guides/types-of-bodies/index.md %}) |

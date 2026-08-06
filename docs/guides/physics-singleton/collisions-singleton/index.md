@@ -192,7 +192,7 @@ public partial struct SurfaceTangentDampSystem : ISystem
 }
 ```
 
-Bodies with **`collision.IsColliding == false`** still invoke the callback — exit early when there is no contact. See [ISurfaceJob]({% link docs/guides/custom-jobs/isurface-job/index.md %}) for read-only and entity-based variants.
+Non-colliding bodies are skipped before **`Execute`** runs — only indices with **`IsColliding == true`** invoke the callback. See [ISurfaceJob]({% link docs/guides/custom-jobs/isurface-job/index.md %}) for read-only and entity-based variants.
 
 ## Related
 

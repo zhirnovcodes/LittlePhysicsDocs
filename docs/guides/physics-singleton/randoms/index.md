@@ -34,14 +34,13 @@ Always **write the updated `Random` back** to **`Randoms[index]`** after drawing
 
 ## Custom job example
 
-Schedule inside **`LittlePhysicsUserSystemGroup`**, combine with **`PhysicsJobHandle`**, and use the body index to access both **`Randoms`** and **`BodiesList`**. For package interfaces that chain **`PhysicsJobHandle`** automatically, see [Custom job interfaces]({% link docs/guides/custom-jobs/using-custom-job-interfaces/index.md %}).
+Schedule inside **`LittlePhysicsUserSystemGroup`** with [`IBodiesJob.IWriteIndex`]({% link docs/guides/custom-jobs/ibodies-job/index.md %}) so you receive the body index for **`Randoms[index]`** while **`ScheduleAndChain`** handles **`BodiesList`** and **`PhysicsJobHandle`**. Pass **`Randoms`** as an extra field on the job struct.
 
 ```csharp
 using LittlePhysics;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
-using Unity.Jobs;
 using Unity.Mathematics;
 
 [BurstCompile]
@@ -59,39 +58,27 @@ public partial struct BodyRandomJitterSystem : ISystem
         ref var simulation = ref SystemAPI.GetSingletonRW<SimulationDataComponent>().ValueRW;
         var deltaTime = SystemAPI.GetSingleton<LittlePhysicsTimeComponent>().DeltaTime;
 
-        var combined = JobHandle.CombineDependencies(
-            state.Dependency, simulation.PhysicsJobHandle);
-
-        var handle = new BodyRandomJitterJob
+        new BodyRandomJitterJob
         {
-            BodiesList = structures.BodiesList,
             Randoms = structures.Randoms,
             Strength = 0.5f * deltaTime,
-        }.Schedule(simulation.ActiveBodiesCount, 32, combined);
-
-        simulation.PhysicsJobHandle = handle;
-        state.Dependency = handle;
+        }.ScheduleAndChain(ref state, in structures, ref simulation);
     }
 
     [BurstCompile]
-    private struct BodyRandomJitterJob : IJobParallelFor
+    private struct BodyRandomJitterJob : IBodiesJob.IWriteIndex
     {
-        [NativeDisableParallelForRestriction]
-        public NativeArray<PhysicsBodyData> BodiesList;
-
         [NativeDisableParallelForRestriction]
         public NativeArray<Random> Randoms;
 
         public float Strength;
 
-        public void Execute(int index)
+        public void Execute(in int index, ref PhysicsBodyData body)
         {
             var random = Randoms[index];
-            var body = BodiesList[index];
 
             if (!body.IsDynamic)
             {
-                Randoms[index] = random;
                 return;
             }
 
@@ -100,18 +87,17 @@ public partial struct BodyRandomJitterSystem : ISystem
             velocity.Linear += jitter;
             body.VelocityData = velocity;
 
-            BodiesList[index] = body;
             Randoms[index] = random;
         }
     }
 }
 ```
 
-Pair **`Randoms[index]`** with **`BodiesList[index]`** (or [`IBodiesJob.IWriteIndex`]({% link docs/guides/custom-jobs/ibodies-job/index.md %})) when you need both random draws and body mutation in one pass.
+Pair **`Randoms[index]`** with the body index from **`IWriteIndex`** when you need both random draws and body mutation in one pass. For raw **`IJobParallelFor`** when touching many buffers at once, see [Custom job interfaces]({% link docs/guides/custom-jobs/using-custom-job-interfaces/index.md %}).
 
 ## Related
 
 - [BodiesList]({% link docs/guides/physics-singleton/bodies-list/index.md %}) — parallel indexing with **`Randoms`**
 - [SimulationDataComponent]({% link docs/guides/physics-singleton/simulation-data-component/index.md %}) — `ActiveBodiesCount` and job handle
-- [Custom job interfaces]({% link docs/guides/custom-jobs/using-custom-job-interfaces/index.md %}) — **`ScheduleAndChain`** and **`PhysicsJobHandle`** chaining
+- [IBodiesJob]({% link docs/guides/custom-jobs/ibodies-job/index.md %}) — **`IWriteIndex`** and **`ScheduleAndChain`**
 - [Spatial map]({% link docs/guides/physics-singleton/spatial-map/index.md %}) — source of the bootstrap seed
