@@ -1,0 +1,110 @@
+<style>
+  .skill-file-block { margin: 1.5rem 0; }
+  .skill-file-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  .skill-file-content {
+    display: block;
+    width: 100%;
+    min-height: 24rem;
+    max-height: 32rem;
+    padding: 1rem;
+    font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.03);
+    resize: vertical;
+    white-space: pre-wrap;
+    overflow-wrap: normal;
+    overflow: auto;
+    box-sizing: border-box;
+  }
+  .skill-copy-status {
+    font-size: 0.875rem;
+    color: #2e7d32;
+  }
+</style>
+
+<div class="skill-file-block">
+  <div class="skill-file-actions">
+    <a class="btn btn-primary" href="{{ include.url }}" download="{{ include.filename | default: 'little-physics-skill.md' }}">Download</a>
+    <button type="button" class="btn" id="skill-copy-btn" disabled>Copy to clipboard</button>
+    <span id="skill-copy-status" class="skill-copy-status" hidden aria-live="polite">Copied!</span>
+  </div>
+  <textarea
+    id="skill-file-content"
+    class="skill-file-content"
+    readonly
+    spellcheck="false"
+    aria-label="Little Physics LLM skill file"
+    aria-busy="true">Loading skill file…</textarea>
+</div>
+
+<script>
+(function () {
+  var url = {{ include.url | jsonify }};
+  var textarea = document.getElementById("skill-file-content");
+  var copyBtn = document.getElementById("skill-copy-btn");
+  var status = document.getElementById("skill-copy-status");
+
+  function enableCopy(text) {
+    textarea.value = text;
+    textarea.removeAttribute("aria-busy");
+    copyBtn.disabled = false;
+  }
+
+  function showError(message) {
+    textarea.value = message;
+    textarea.removeAttribute("aria-busy");
+    copyBtn.disabled = true;
+  }
+
+  fetch(url)
+    .then(function (response) {
+      if (!response.ok) {
+        throw new Error("HTTP " + response.status);
+      }
+      return response.text();
+    })
+    .then(enableCopy)
+    .catch(function () {
+      showError(
+        "Could not load the skill file.\n\n" +
+        "Use Download, or open this URL directly:\n" +
+        url
+      );
+    });
+
+  copyBtn.addEventListener("click", function () {
+    var text = textarea.value;
+
+    function showCopied() {
+      status.hidden = false;
+      window.setTimeout(function () {
+        status.hidden = true;
+      }, 2000);
+    }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(showCopied).catch(function () {
+        textarea.focus();
+        textarea.select();
+        document.execCommand("copy");
+        showCopied();
+      });
+      return;
+    }
+
+    textarea.focus();
+    textarea.select();
+    document.execCommand("copy");
+    showCopied();
+  });
+})();
+</script>

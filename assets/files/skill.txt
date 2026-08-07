@@ -1,0 +1,435 @@
+---
+name: little-physics
+description: >-
+  Write C# and ECS code for the Little Physics package (com.ivancodes.littlephysics).
+  Use when implementing custom systems, job interfaces, builders, import/export hooks,
+  or runtime spawning — not for Unity Editor scene setup.
+---
+
+Little Physics — LLM skill
+
+Expert guidance for Little Physics (LittlePhysics namespace, com.ivancodes.littlephysics): Unity 6 (6000.0+) ECS physics for large-scale, non-deterministic simulations (crowds, particles, liquids).
+
+
+SCOPE
+
+Do: write and review C# — ISystem implementations, IBodiesJob / ICollisionJob / ISurfaceJob / ILineCastJob, builders, EntityCommandBuffer spawn logic, import/export systems, code that reads or writes native physics buffers.
+
+Do not: set up Unity Editor scenes, create GameObjects, assign Inspector fields, or bake subscenes. The user handles scene authoring. Reference authorings below only so generated code matches how the package runs.
+
+
+REQUIREMENTS
+
+- Unity 6000.0+ (Unity 6). Not Unity 2022.
+- Entities com.unity.entities 1.4.8
+- Input System com.unity.inputsystem 1.19.0
+- Samples (optional): Entities.Graphics
+
+
+PRODUCT FACTS
+
+- Scale: up to ~1,000,000 dynamic units (spheres only, Burst, multithreading, LOD)
+- Trade-off: loose LOD/settings reduce determinism — OK for crowds/particles/liquids
+- Time scale: LittlePhysicsTimeComponent.TimeScale — 0, 1, 2, or 4 only
+- Substeps: PhysicsSettingsAuthoring — 1–4 per fixed update
+- Body cap: MaxEntitiesCount — excess entities are ignored
+
+
+SHAPES
+
+- Dynamic: sphere only
+- Kinematic and static: sphere, capsule
+- Surface: sphere, capsule, simple plane, box, reverse sphere, related primitives
+- Object-to-object collisions only inside SpacialMapAuthoring bounds; outside map still gets gravity + surface collision
+
+
+BODY TYPES
+
+- Dynamic (DynamicBodyAuthoring): gravity, friction, surface + object collisions
+- Kinematic rigid (KinematicBodyAuthoring, IsTrigger=false): pushes dynamics; map updated each substep
+- Kinematic trigger (KinematicBodyAuthoring, IsTrigger=true): intersection only; map on UpdateInterval
+- Static rigid (StaticBodyAuthoring, IsTrigger=false): pushes dynamics; map once at bake
+- Static trigger (StaticBodyAuthoring, IsTrigger=true): intersection only; map once
+- Surface (SurfaceBodyAuthoring): collides all dynamic bodies every substep
+
+PhysicsVelocityAuthoring: dynamic bodies only. Never on surfaces — ignored; Unity warns.
+
+
+SCENE CONTEXT (user setup — not LLM task)
+
+User must already have a baked subscene with:
+- PhysicsSettingsAuthoring (required — without it bootstrap does not run)
+- SpacialMapAuthoring (CellWidth, GridSize, position)
+- Optional GravitySourceAuthoring, SurfaceBodyAuthoring
+- DynamicBodyAuthoring / KinematicBodyAuthoring / StaticBodyAuthoring on bodies
+
+
+AUTHORINGS (user configures in Inspector)
+
+- PhysicsSettingsAuthoring — global limits, LOD, substeps, friction, push-out
+- SpacialMapAuthoring — grid for object-to-object collisions
+- GravitySourceAuthoring — directional or spherical
+- SurfaceBodyAuthoring — ground/walls for all dynamics
+- DynamicBodyAuthoring — dynamic sphere
+- KinematicBodyAuthoring — sphere/capsule; IsTrigger for triggers
+- StaticBodyAuthoring — sphere/capsule; IsTrigger for triggers
+- PhysicsVelocityAuthoring — start velocity (dynamic only)
+
+
+PIPELINE (each frame)
+
+Initialization → LittlePhysicsBootstrapSystem (once)
+LateSimulation → LittlePhysicsImportGroup
+FixedStep → LittlePhysicsSystemGroup × (TimeScale × Substeps)
+  gravity → friction → spatial map → detection → velocity → surface
+  → LittlePhysicsUserSystemGroup (your systems)
+  → PhysicsVelocitySystem
+Simulation → LittlePhysicsExportGroup
+
+Public extension points:
+- LittlePhysicsImportGroup — before/after internal import
+- LittlePhysicsUserSystemGroup — mid-step forces, gameplay, package job interfaces
+- LittlePhysicsExportGroup — before/after internal export
+
+All custom systems: state.RequireForUpdate<PhysicsReadyTag>();
+
+Import before internal:
+  [UpdateInGroup(typeof(LittlePhysicsImportGroup))]
+  [UpdateBefore(typeof(LittlePhysicsInternalImportGroup))]
+
+Import after internal:
+  [UpdateInGroup(typeof(LittlePhysicsImportGroup))]
+  [UpdateAfter(typeof(LittlePhysicsInternalImportGroup))]
+
+Export before internal:
+  [UpdateInGroup(typeof(LittlePhysicsExportGroup))]
+  [UpdateBefore(typeof(LittlePhysicsInternalExportGroup))]
+
+Export after internal:
+  [UpdateInGroup(typeof(LittlePhysicsExportGroup))]
+  [UpdateAfter(typeof(LittlePhysicsInternalExportGroup))]
+
+PhysicsJobHandle chaining (any job touching native buffers):
+
+ref var simulation = ref SystemAPI.GetSingletonRW<SimulationDataComponent>().ValueRW;
+var combined = JobHandle.CombineDependencies(state.Dependency, simulation.PhysicsJobHandle);
+var handle = myJob.Schedule(/* args */, combined);
+simulation.PhysicsJobHandle = handle;
+state.Dependency = handle;
+
+Package job interfaces use ScheduleAndChain — prefer them in LittlePhysicsUserSystemGroup.
+Use LittlePhysicsTimeComponent.DeltaTime for scaled substep delta in mid-step systems.
+
+
+CUSTOM JOBS — WHEN TO USE WHAT
+
+- Override ECS before native import → LittlePhysicsImportGroup, before internal
+- Patch BodiesList / maps after import → LittlePhysicsImportGroup, after internal
+- Forces, collision response, gameplay → LittlePhysicsUserSystemGroup
+- Read native before write-back → LittlePhysicsExportGroup, before internal
+- Sync rendering, networking, destroy entities → LittlePhysicsExportGroup, after internal
+
+
+PACKAGE JOB INTERFACES (prefer these)
+
+All in LittlePhysicsUserSystemGroup unless noted. Schedule with .ScheduleAndChain — chaining built in.
+
+IBodiesJob — nested: IRead, IWrite, IReadIndex, IWriteIndex
+  Iterates BodiesList 0 … ActiveBodiesCount-1. Parallel, batch 32.
+
+ICollisionJob — nested: IReadBody, IWriteBody, IReadBodies, IWriteBodies, IEntities
+  Iterates filled CollisionDataMap slots. Parallel.
+
+ISurfaceJob — nested: IReadBody, IWriteBody, IEntity
+  Iterates SurfaceCollisionMap where IsColliding. Parallel.
+
+ILineCastJob — nested: IReadBody, IWriteBody
+  Line segment query through spatial map. Single thread.
+
+Common rules:
+- Skip body.Main == Entity.Null
+- Loop length = ActiveBodiesCount, not MaxEntitiesCount
+- Collision write jobs update owning body only
+- Scale forces by LittlePhysicsTimeComponent.DeltaTime
+
+
+EXAMPLE — IBodiesJob.IWrite (velocity damping)
+
+[BurstCompile]
+[UpdateInGroup(typeof(LittlePhysicsUserSystemGroup))]
+public partial struct DampVelocitySystem : ISystem
+{
+    public void OnCreate(ref SystemState state) =>
+        state.RequireForUpdate<PhysicsReadyTag>();
+
+    public void OnUpdate(ref SystemState state)
+    {
+        var structures = SystemAPI.GetSingleton<PhysicsStructuresComponent>();
+        ref var simulation = ref SystemAPI.GetSingletonRW<SimulationDataComponent>().ValueRW;
+        new DampVelocityJob { Factor = 0.99f }
+            .ScheduleAndChain(ref state, in structures, ref simulation);
+    }
+
+    private struct DampVelocityJob : IBodiesJob.IWrite
+    {
+        public float Factor;
+        public void Execute(ref PhysicsBodyData body)
+        {
+            if (!body.IsDynamic) return;
+            var velocity = body.VelocityData;
+            velocity.Linear *= Factor;
+            body.VelocityData = velocity;
+        }
+    }
+}
+
+
+EXAMPLE — IBodiesJob.IWriteIndex (per-body random + Randoms array)
+
+private struct BodyRandomJitterJob : IBodiesJob.IWriteIndex
+{
+    [NativeDisableParallelForRestriction] public NativeArray<Random> Randoms;
+    public float Strength;
+    public void Execute(in int index, ref PhysicsBodyData body)
+    {
+        var random = Randoms[index];
+        if (!body.IsDynamic) { Randoms[index] = random; return; }
+        var velocity = body.VelocityData;
+        velocity.Linear += random.NextFloat3Direction() * Strength;
+        body.VelocityData = velocity;
+        Randoms[index] = random;
+    }
+}
+
+
+EXAMPLE — ICollisionJob.IWriteBodies (trigger attraction, Scene 4 pattern)
+
+private struct TriggerAttractionJob : ICollisionJob.IWriteBodies
+{
+    public float Velocity;
+    public void Execute(ref PhysicsBodyData body1, in PhysicsBodyData body2, in CollisionData collision)
+    {
+        if (body1.IsTrigger || !body1.IsDynamic || !body2.IsTrigger) return;
+        float3 toTrigger = body2.PositionData.Position - body1.PositionData.Position;
+        float distance = math.length(toTrigger);
+        if (distance < 0.001f) return;
+        var vel = body1.VelocityData;
+        vel.Linear += (toTrigger / distance) * Velocity;
+        body1.VelocityData = vel;
+    }
+}
+
+
+EXAMPLE — ICollisionJob.IEntities (collision events, no body writes)
+
+private struct CollisionEventJob : ICollisionJob.IEntities
+{
+    public NativeQueue<EntityPairEvent>.ParallelWriter Events;
+    public void Execute(in Entity entity1, in Entity entity2, in CollisionData collision)
+    {
+        Events.Enqueue(new EntityPairEvent { A = entity1, B = entity2 });
+    }
+}
+
+
+EXAMPLE — ISurfaceJob.IWriteBody (tangent damping on ground contact)
+
+private struct SurfaceTangentDampJob : ISurfaceJob.IWriteBody
+{
+    public float Damping;
+    public void Execute(ref PhysicsBodyData body, in SurfaceCollisionData collision)
+    {
+        if (!body.IsDynamic) return;
+        var velocity = body.VelocityData;
+        float3 tangent = velocity.Linear
+            - math.dot(velocity.Linear, collision.Normal) * collision.Normal;
+        velocity.Linear = tangent * Damping;
+        body.VelocityData = velocity;
+    }
+}
+
+
+EXAMPLE — ISurfaceJob.IEntity (surface touch events)
+
+private struct SurfaceTouchEventJob : ISurfaceJob.IEntity
+{
+    public NativeQueue<Entity>.ParallelWriter TouchEvents;
+    public void Execute(in Entity entity, in SurfaceCollisionData collision)
+    {
+        TouchEvents.Enqueue(entity);
+    }
+}
+
+
+EXAMPLE — ILineCastJob.IWriteBody (click impulse, Scene 5 pattern)
+
+new LineCastJob { CastDirection = dir, Force = force }
+    .ScheduleAndChain(ref state, in structures, in variableSettings, ref simulation, line, filter);
+
+private struct LineCastJob : ILineCastJob.IWriteBody
+{
+    public float3 CastDirection;
+    public float Force;
+    public void Execute(ref PhysicsBodyData body, in LineCastResult result)
+    {
+        var velocity = body.VelocityData;
+        velocity.Linear += CastDirection * Force;
+        body.VelocityData = velocity;
+    }
+}
+
+Linecast input (mouse ray) usually in LittlePhysicsImportGroup; cast runs mid-step.
+All hits: NativeList<LineCastResult> overload; dispose after state.Dependency.
+
+
+CUSTOM UNITY JOBS (when package interfaces are not enough)
+
+Use IJob, IJobParallelFor, or IJobEntity for extra native arrays, custom iteration, or ECS access.
+Always chain PhysicsJobHandle when touching native physics buffers.
+
+IJobParallelFor — per body (manual chaining):
+
+ref var simulation = ref SystemAPI.GetSingletonRW<SimulationDataComponent>().ValueRW;
+var combined = JobHandle.CombineDependencies(state.Dependency, simulation.PhysicsJobHandle);
+var handle = new DampVelocityParallelJob
+{
+    BodiesList = structures.BodiesList,
+    Factor = 0.99f,
+}.Schedule(simulation.ActiveBodiesCount, 32, combined);
+simulation.PhysicsJobHandle = handle;
+state.Dependency = handle;
+
+[BurstCompile]
+private struct DampVelocityParallelJob : IJobParallelFor
+{
+    [NativeDisableParallelForRestriction] public NativeArray<PhysicsBodyData> BodiesList;
+    public float Factor;
+    public void Execute(int index)
+    {
+        var body = BodiesList[index];
+        if (body.Main == Entity.Null || !body.IsDynamic) return;
+        var velocity = body.VelocityData;
+        velocity.Linear *= Factor;
+        body.VelocityData = velocity;
+        BodiesList[index] = body;
+    }
+}
+
+IJobParallelFor — custom collision slot loop per body:
+
+private struct CustomCollisionResponseJob : IJobParallelFor
+{
+    [NativeDisableParallelForRestriction] public NativeArray<PhysicsBodyData> BodiesList;
+    [ReadOnly] public ListsArray<CollisionData> CollisionDataMap;
+    public void Execute(int bodyIndex)
+    {
+        var body = BodiesList[bodyIndex];
+        if (body.Main == Entity.Null) return;
+        for (int slot = 0; slot < CollisionDataMap.GetCount(bodyIndex); slot++)
+        {
+            var collision = CollisionDataMap.GetValue(bodyIndex, slot);
+            if (!collision.HasValue) continue;
+            // collision.OtherIndex, ContactPoint, Normal, PenetrationDepth
+        }
+        BodiesList[bodyIndex] = body;
+    }
+}
+
+IJob — single-threaded aggregation (still chain PhysicsJobHandle).
+
+IJobEntity — ECS after export (LocalTransform, destroy entity). Scene 3 Pachinko pattern.
+Do not query ECS for physics inside LittlePhysicsUserSystemGroup — use native buffers.
+
+
+GROUP + CHAINING
+
+- LittlePhysicsImportGroup before internal: ECS only, no PhysicsJobHandle
+- LittlePhysicsImportGroup after internal: native buffers, chain PhysicsJobHandle
+- LittlePhysicsUserSystemGroup: native buffers, chain (or ScheduleAndChain)
+- LittlePhysicsExportGroup before internal: native buffers, chain
+- LittlePhysicsExportGroup after internal: ECS only, no PhysicsJobHandle
+
+
+NATIVE DATA (PhysicsStructuresComponent)
+
+- BodiesList — NativeArray<PhysicsBodyData>
+- EntitiesMap — Entity to body index
+- Randoms — per-body Random streams
+- CollisionMapSingleton — DynamicMap, StaticMap
+- CollisionsSingleton — SurfaceCollisionMap, CollisionDataMap
+
+Access after PhysicsReadyTag via SystemAPI.GetSingleton<PhysicsStructuresComponent>().
+
+PhysicsBodyData: BodyType, ShapeType, IsTrigger, Layer, LodIndex, PositionData, VelocityData (dynamic), RigidbodyData, TimeElapsed, Interval.
+
+CollisionData: HasValue, OtherIndex, contact point/normal, penetration, push-out weight.
+SurfaceCollisionData: IsColliding, contact point, normal.
+
+
+BUILDERS (runtime spawn — not surfaces)
+
+- DynamicBodyBuilder — like DynamicBodyAuthoring
+- KinematicBodyBuilder — like KinematicBodyAuthoring
+- StaticBodyBuilder — like StaticBodyAuthoring
+
+Bodies join simulation on next import pass after ECB playback.
+
+var ecb = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>()
+    .CreateCommandBuffer(state.WorldUnmanaged);
+var entity = ecb.Instantiate(prefab);
+ecb.SetComponent(entity, LocalTransform.FromPosition(position));
+new DynamicBodyBuilder(bounciness: 0f, friction: 0.5f, hardness: 1f, mass: 1f)
+    .WithCollider(colliderScale: 1f)
+    .WithVelocity(linearVelocity)
+    .Build(ecb, entity);
+
+Builder defaults: Layer=0 (set manually if needed); dynamic ShouldRotateOnCollision defaults false (authoring defaults true).
+
+
+LOD
+
+Up to 4 levels in PhysicsSettingsAuthoring. Camera distance assigns LodIndex. Closer camera → higher fidelity.
+
+
+PITFALLS
+
+- Authorings must be in baked subscene
+- Missing PhysicsSettingsAuthoring — bootstrap never runs
+- Dynamic bodies: spheres only
+- Bodies outside spatial map — no object-to-object collision
+- Exceeding MaxEntitiesCount — silent ignore
+- Skipping PhysicsJobHandle — data races
+- PhysicsVelocityAuthoring on surfaces — ignored
+- Use LittlePhysicsImportGroup / LittlePhysicsExportGroup (not LittlePhysicsUserImportGroup)
+
+
+CODE CHECKLIST
+
+- RequireForUpdate<PhysicsReadyTag>()
+- Chain PhysicsJobHandle on native buffer jobs
+- Mid-step: LittlePhysicsUserSystemGroup + package interfaces when possible
+- Runtime spawn: builders + import/export hooks
+- Respect sphere-only dynamics, spatial map, MaxEntitiesCount
+
+
+PUBLIC API
+
+Authorings: DynamicBodyAuthoring, KinematicBodyAuthoring, StaticBodyAuthoring, SurfaceBodyAuthoring, GravitySourceAuthoring, PhysicsSettingsAuthoring, PhysicsVelocityAuthoring, SpacialMapAuthoring
+
+Components: PhysicsBodyComponent, PhysicsBodyUpdateComponent, PhysicsVelocityComponent, PhysicsReadyTag, PhysicsFixedSettingsComponent, PhysicsVariableSettingsComponent, LittlePhysicsTimeComponent, SimulationDataComponent, PhysicsStructuresComponent, CollisionMapSingleton, CollisionsSingleton
+
+Builders: DynamicBodyBuilder, KinematicBodyBuilder, StaticBodyBuilder
+
+Jobs: IBodiesJob, ICollisionJob, ISurfaceJob, ILineCastJob
+
+Data: PhysicsBodyData, CollisionData, SurfaceCollisionData, RigidbodyData, VelocityData, PositionData
+
+Enums: BodyType, ColliderType, ShapeType, GravitySourceType, PushOutType
+
+Editor: Window → Little Physics (pairs debug)
+
+
+SAMPLES
+
+Package Manager → Little Physics → All Samples (5 scenes).
+TriggerAttractionSystem (ICollisionJob), LineCastSystem (ILineCastJob), DisappearAtYSystem (export group).

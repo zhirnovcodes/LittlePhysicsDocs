@@ -1,7 +1,7 @@
 ---
 title: Feedback
 layout: default
-nav_order: 10
+nav_order: 11
 permalink: /docs/feedback/
 description: Send feedback, corrections, or suggestions for the Little Physics documentation.
 tags: [feedback]

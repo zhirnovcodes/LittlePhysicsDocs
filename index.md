@@ -59,5 +59,6 @@ Object-to-object collisions run inside the **Spatial Map** bounds you configure.
 | [Physics singleton]({% link docs/guides/physics-singleton/index.md %}) | Shared components and native data structures |
 | [Custom jobs]({% link docs/guides/custom-jobs/index.md %}) | `IBodiesJob`, `ICollisionJob`, `ISurfaceJob`, import/export workflow |
 | [Builders]({% link docs/guides/builders/index.md %}) | Runtime body creation with `DynamicBodyBuilder`, `KinematicBodyBuilder`, `StaticBodyBuilder` |
+| [LLM skills]({% link docs/llm-skills/index.md %}) | Skill file for AI assistants writing Little Physics code |
 
 New to the package? Start with [Getting Started]({% link docs/getting-started/index.md %}).
