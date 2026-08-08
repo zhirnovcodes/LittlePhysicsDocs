@@ -12,6 +12,8 @@ description: Little Physics — Unity ECS physics for large-scale simulations.
 
 Dynamic bodies are **spheres only**, but the package trades shape variety for speed: configurable simulation limits, up to **four LOD levels**, **Burst** compilation, and **multithreading** let you run on the order of **1,000,000** units at once. Looser settings reduce determinism; tighter settings and closer camera ranges improve it.
 
+{% include youtube.html id="SvjItMu0dro" %}
+
 ## Requirements
 
 - **Unity 6000.0+** (Unity 6) — not compatible with Unity 2022
