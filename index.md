@@ -8,9 +8,9 @@ description: Little Physics — Unity ECS physics for large-scale simulations.
 
 # Little Physics
 
-**Little Physics** is a Unity ECS physics package built for large-scale simulations — crowds, physical particles, liquids, and other scenarios where throughput matters more than perfect determinism.
+**Little Physics** is a Unity ECS physics package for large-scale simulations. Pause or speed up the simulation, use dynamic, static, kinematic, and trigger bodies, and tune LOD for simulation accuracy. A spatial map limits object-to-object collisions to a volume you define. The package supports directional and radial gravity, friction, and custom job interfaces for collision detection and linecasts.
 
-Dynamic bodies are **spheres only**, but the package trades shape variety for speed: configurable simulation limits, up to **four LOD levels**, **Burst** compilation, and **multithreading** let you run on the order of **1,000,000** units at once. Looser settings reduce determinism; tighter settings and closer camera ranges improve it.
+With ECS, Burst, and multithreading, it can handle on the order of **1,000,000** entities. It suits low-determinism workloads such as crowds, liquids, and particles — not highly deterministic simulations.
 
 {% include youtube.html id="SvjItMu0dro" %}
 
