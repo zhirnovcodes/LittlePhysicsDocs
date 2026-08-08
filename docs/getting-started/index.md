@@ -134,7 +134,7 @@ Samples are the fastest way to see LOD, spawning, triggers, and custom jobs in a
 
 | Topic | Page |
 |-------|------|
-| Body types, triggers, and shapes | [Types of bodies]({% link docs/guides/types-of-bodies/index.md %}) |
+| Settings, body types, LOD, spatial map | [Settings]({% link docs/guides/settings/index.md %}) |
 | Bootstrap, import, fixed step, export | [How it works]({% link docs/how-it-works/index.md %}) |
 | System groups and custom hook points | [Pipeline]({% link docs/pipeline/index.md %}) |
 | Shared native data and singleton components | [Physics singleton]({% link docs/guides/physics-singleton/index.md %}) |

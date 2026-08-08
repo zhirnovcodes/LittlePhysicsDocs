@@ -91,4 +91,4 @@ while (dynamicMap.Traverse(cellIndex, ref iterator, out uint bodyIndex))
 
 - [CollisionMapSingleton]({% link docs/guides/physics-singleton/collision-map-singleton/index.md %}) — **`DynamicMap`** and **`StaticMap`**
 - [CollisionsSingleton]({% link docs/guides/physics-singleton/collisions-singleton/index.md %}) — **`CollisionDataMap`**
-- [Physics settings and LOD]({% link docs/guides/physics-singleton/physics-settings-and-lod/index.md %}) — per-LOD caps that size list capacities
+- [Physics settings and LOD]({% link docs/guides/settings/physics-settings-and-lod/index.md %}) — per-LOD caps that size list capacities

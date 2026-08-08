@@ -10,7 +10,7 @@ tags: [singleton, native, spatial-map, broad-phase]
 
 # CollisionMapSingleton
 
-A nested struct on [`PhysicsStructuresComponent`]({% link docs/guides/physics-singleton/physics-structures-component/index.md %}) that holds the **spatial broad-phase maps** used for object-to-object pair collection. Bodies are bucketed into [spatial map]({% link docs/guides/physics-singleton/spatial-map/index.md %}) cells so **`CollisionDetectionSystem`** can find nearby candidates without testing every pair.
+A nested struct on [`PhysicsStructuresComponent`]({% link docs/guides/physics-singleton/physics-structures-component/index.md %}) that holds the **spatial broad-phase maps** used for object-to-object pair collection. Bodies are bucketed into [spatial map]({% link docs/guides/settings/spatial-map/index.md %}) cells so **`CollisionDetectionSystem`** can find nearby candidates without testing every pair.
 
 Object-to-object collision only runs for bodies whose AABB overlaps the spatial map bounds. Bodies outside the map still receive gravity and surface collision.
 
@@ -78,7 +78,7 @@ for (int i = 0; i < count; i++)
 ## Related
 
 - [ListsArray]({% link docs/guides/physics-singleton/lists-array/index.md %}) — fixed-capacity array-of-lists container
-- [Spatial map]({% link docs/guides/physics-singleton/spatial-map/index.md %}) — grid bounds, cell size, and authoring
-- [Physics settings and LOD]({% link docs/guides/physics-singleton/physics-settings-and-lod/index.md %}) — **`DynamicsInCells`**, **`StaticInCells`**, **`CellPerEntity`**
+- [Spatial map]({% link docs/guides/settings/spatial-map/index.md %}) — grid bounds, cell size, and authoring
+- [Physics settings and LOD]({% link docs/guides/settings/physics-settings-and-lod/index.md %}) — **`DynamicsInCells`**, **`StaticInCells`**, **`CellPerEntity`**
 - [CollisionsSingleton]({% link docs/guides/physics-singleton/collisions-singleton/index.md %}) — narrow-phase results after pair collection
 - [EntitiesMap]({% link docs/guides/physics-singleton/entities-map/index.md %}) — static entity → body index

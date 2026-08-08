@@ -10,7 +10,7 @@ tags: [builders, kinematic, trigger, runtime]
 
 # KinematicBodyBuilder
 
-**`KinematicBodyBuilder`** adds **`PhysicsBodyComponent`** and **`PhysicsBodyUpdateComponent`** for a **kinematic** body — either a **rigid** collider that pushes dynamics or a **trigger** that records intersections on an interval. Runtime equivalent of [`KinematicBodyAuthoring`]({% link docs/guides/types-of-bodies/kinematic/index.md %}).
+**`KinematicBodyBuilder`** adds **`PhysicsBodyComponent`** and **`PhysicsBodyUpdateComponent`** for a **kinematic** body — either a **rigid** collider that pushes dynamics or a **trigger** that records intersections on an interval. Runtime equivalent of [`KinematicBodyAuthoring`]({% link docs/guides/settings/kinematic/index.md %}).
 
 Kinematic bodies support **sphere** and **capsule** shapes. They do **not** receive **`PhysicsVelocityComponent`**.
 
@@ -100,10 +100,10 @@ Move kinematics by updating **`LocalTransform`** (or the **`Main`** entity’s t
 | **`PhysicsBodyUpdateComponent.Interval`** | **`0`** | **`updateInterval`** from **`.AsTrigger`** |
 | **`PhysicsBodyUpdateComponent.TimeElapsed`** | **`0`** | **`0`** |
 
-Read trigger overlaps from [`ICollisionJob`]({% link docs/guides/custom-jobs/icollision-job/index.md %}) or collision buffers — see [Kinematic triggers]({% link docs/guides/types-of-bodies/kinematic/index.md %}#reading-trigger-overlaps).
+Read trigger overlaps from [`ICollisionJob`]({% link docs/guides/custom-jobs/icollision-job/index.md %}) or collision buffers — see [Kinematic triggers]({% link docs/guides/settings/kinematic/index.md %}#reading-trigger-overlaps).
 
 ## Related
 
 - [Builders overview]({% link docs/guides/builders/index.md %})
-- [Kinematic body type]({% link docs/guides/types-of-bodies/kinematic/index.md %})
+- [Kinematic body type]({% link docs/guides/settings/kinematic/index.md %})
 - [StaticBodyBuilder]({% link docs/guides/builders/static-body-builder/index.md %}) — fixed counterparts

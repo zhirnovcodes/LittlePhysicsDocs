@@ -271,4 +271,4 @@ Simulation (after all fixed-step work)
 | `BodiesList`, collision maps, singleton access | [Physics singleton]({% link docs/guides/physics-singleton/index.md %}) |
 | `IBodiesJob`, `ICollisionJob`, `ISurfaceJob`, `ILineCastJob` | [Custom jobs]({% link docs/guides/custom-jobs/index.md %}) |
 | Raw `IJob` / `IJobParallelFor` against native buffers | [Custom job interfaces]({% link docs/guides/custom-jobs/using-custom-job-interfaces/index.md %}) |
-| Body types and shape constraints | [Types of bodies]({% link docs/guides/types-of-bodies/index.md %}) |
+| Settings, body types, LOD, spatial map | [Settings]({% link docs/guides/settings/index.md %}) |

@@ -10,7 +10,7 @@ tags: [builders, static, trigger, runtime]
 
 # StaticBodyBuilder
 
-**`StaticBodyBuilder`** adds **`PhysicsBodyComponent`** and **`PhysicsBodyUpdateComponent`** for a **static** body — fixed geometry that either **pushes dynamics** (rigid) or **records overlaps** (trigger). Runtime equivalent of [`StaticBodyAuthoring`]({% link docs/guides/types-of-bodies/static/index.md %}).
+**`StaticBodyBuilder`** adds **`PhysicsBodyComponent`** and **`PhysicsBodyUpdateComponent`** for a **static** body — fixed geometry that either **pushes dynamics** (rigid) or **records overlaps** (trigger). Runtime equivalent of [`StaticBodyAuthoring`]({% link docs/guides/settings/static/index.md %}).
 
 Static bodies support **sphere** and **capsule** only. They are registered in the spatial map **once** (`TimeElapsed = -1`), unlike kinematic or dynamic bodies.
 
@@ -78,7 +78,7 @@ Ensure the entity has a **`LocalTransform`** at the final world pose before impo
 | **`PhysicsBodyUpdateComponent.TimeElapsed`** | **`-1`** (insert once) | **`-1`** |
 | **`PhysicsBodyUpdateComponent.Interval`** | **`0`** | **`0`** |
 
-Statics are **not** tested against [surfaces]({% link docs/guides/types-of-bodies/surface/index.md %}) in the built-in surface pass. For large ground planes, prefer a baked surface body.
+Statics are **not** tested against [surfaces]({% link docs/guides/settings/surface/index.md %}) in the built-in surface pass. For large ground planes, prefer a baked surface body.
 
 ## Static vs kinematic at runtime
 
@@ -91,5 +91,5 @@ Statics are **not** tested against [surfaces]({% link docs/guides/types-of-bodie
 ## Related
 
 - [Builders overview]({% link docs/guides/builders/index.md %})
-- [Static body type]({% link docs/guides/types-of-bodies/static/index.md %})
-- [Spatial map — StaticMap]({% link docs/guides/physics-singleton/spatial-map/index.md %})
+- [Static body type]({% link docs/guides/settings/static/index.md %})
+- [Spatial map — StaticMap]({% link docs/guides/settings/spatial-map/index.md %})

@@ -10,7 +10,7 @@ tags: [singleton, settings, lod, blob]
 
 # PhysicsFixedSettingsComponent
 
-A singleton component that holds **fixed physics settings** baked at startup. Values come from [Physics settings and LOD]({% link docs/guides/physics-singleton/physics-settings-and-lod/index.md %}) and the Unity **layer collision matrix**; they are treated as **fixed for the session** after bootstrap.
+A singleton component that holds **fixed physics settings** baked at startup. Values come from [Physics settings and LOD]({% link docs/guides/settings/physics-settings-and-lod/index.md %}) and the Unity **layer collision matrix**; they are treated as **fixed for the session** after bootstrap.
 
 Internal systems read this component for caps, LOD tiers, pair-check toggles, layer filtering, and spatial-map bounds. Custom code can read it too — for example to respect **`MaxEntitiesCount`** or query whether two layers collide.
 
@@ -27,7 +27,7 @@ Access blob data with **`fixedSettings.BlobRef.Value`** (or `ref fixedSettings.B
 
 Set from **`SpacialMapAuthoring`** at bootstrap. Holds the **`Grid3D`** definition and **`GridSize`** in cells. Collision and map systems use it to convert world positions to cell indices.
 
-See [Spatial map]({% link docs/guides/physics-singleton/spatial-map/index.md %}).
+See [Spatial map]({% link docs/guides/settings/spatial-map/index.md %}).
 
 ## PhysicsSettingsBlobAsset
 
@@ -52,7 +52,7 @@ The blob is created once in **`LittlePhysicsBootstrapSystem`** and stored in **`
 
 Each LOD tier in **`LodData`** defines a **`Range`**, optional **`VisionAngle`**, and **`int3`** capacity fields (`DynamicsInCells`, `StaticInCells`, `CellPerEntity`, `PairPerEntity`, `CollisionPerEntity`) resolved at time scales **×1**, **×2**, and **×4**. Import and collision systems pick the active tier per body to cap spatial-map and pairwise work.
 
-See [Physics settings and LOD]({% link docs/guides/physics-singleton/physics-settings-and-lod/index.md %}) and [How it works — LOD]({% link docs/how-it-works/index.md %}#lod-level-of-detail).
+See [Physics settings and LOD]({% link docs/guides/settings/physics-settings-and-lod/index.md %}) and [How it works — LOD]({% link docs/how-it-works/index.md %}#lod-level-of-detail).
 
 ## Layer collision helper
 
@@ -74,7 +74,7 @@ This reads **`LayersMaps[layer1]`** and checks the bit for **`layer2`**.
 
 ## Related
 
-- [Physics settings and LOD]({% link docs/guides/physics-singleton/physics-settings-and-lod/index.md %}) — authoring setup for blob fields and LOD tiers
+- [Physics settings and LOD]({% link docs/guides/settings/physics-settings-and-lod/index.md %}) — authoring setup for blob fields and LOD tiers
 - [PhysicsVariableSettingsComponent]({% link docs/guides/physics-singleton/physics-variable-settings-component/index.md %}) — per-tick environment and substep settings
 - [SimulationDataComponent]({% link docs/guides/physics-singleton/simulation-data-component/index.md %}) — `ActiveBodiesCount` capped by `MaxEntitiesCount`
-- [Spatial map]({% link docs/guides/physics-singleton/spatial-map/index.md %}) — how cells and maps use `SpacialMap`
+- [Spatial map]({% link docs/guides/settings/spatial-map/index.md %}) — how cells and maps use `SpacialMap`

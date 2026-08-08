@@ -1,9 +1,9 @@
 ---
 title: Physics settings and LOD
 layout: default
-parent: Physics singleton
-nav_order: 16
-permalink: /docs/guides/physics-singleton/physics-settings-and-lod/
+parent: Settings
+nav_order: 1
+permalink: /docs/guides/settings/physics-settings-and-lod/
 description: PhysicsSettingsAuthoring, LOD tiers, and per-LOD simulation capacity limits.
 tags: [settings, lod, authoring, capacity, determinism]
 ---
@@ -40,6 +40,41 @@ Add **`PhysicsSettingsAuthoring`** once per baked world. Bootstrap waits for thi
 
 The Unity **layer collision matrix** is also baked into the settings blob at bootstrap. Use **`PhysicsFixedSettingsComponent.IsColliding(layer1, layer2)`** to query it at runtime.
 
+## Push-out (`PushOutType`)
+
+After narrow-phase contacts (object-to-object and surface), the solver builds a **push-out velocity** from penetration depth, contact normal, **`PushOutPower`**, and the current linear velocity. **`PushOutType`** chooses how that velocity is applied to the dynamic body:
+
+| Value | Behavior |
+|-------|----------|
+| **`Position`** (default) | Integrate push-out into **`Position`** this substep (`position += pushOutVelocity * DeltaTime`) |
+| **`Velocity`** | Add only the missing speed along the push direction to **`Linear`** velocity|
+
+Both **`CollisionVelocitySystem`** (pairwise contacts) and **`SurfaceCollisionSystem`** (surface contacts) resolve with the same switch. Object-to-object resolution:
+
+```csharp
+switch (PushOutType)
+{
+    case PushOutType.Position:
+    {
+        positionData.Position += pushOutVelocity * DeltaTime;
+        break;
+    }
+    case PushOutType.Velocity:
+    {
+        float pushOutLength = math.length(pushOutVelocity);
+        if (pushOutLength > 0f)
+        {
+            float3 pushDir = pushOutVelocity / pushOutLength;
+            float existingSpeed = math.dot(velocityData.Linear, pushDir);
+            velocityData.Linear += pushDir * math.max(0f, pushOutLength - existingSpeed);
+        }
+        break;
+    }
+}
+```
+
+Surface collision uses the same **`Position`** path; for **`Velocity`** it takes the push direction from **`-result.Normal`** instead of normalizing the averaged push-out vector.
+
 ## LOD tiers
 
 Use the **LOD** list on **`PhysicsSettingsAuthoring`** to add up to **four** distance tiers. The Inspector draws each tier in the Scene view (matching colors in the property window).
@@ -72,7 +107,7 @@ Each LOD tier stores five limits as **`int3`** vectors. The three components are
 | **`PairPerEntity`** | Max unique collision **pairs** collected per body during broad phase |
 | **`CollisionPerEntity`** | Max narrow-phase **collisions** stored per body — the heaviest step; keep lower on distant LOD tiers |
 
-At runtime, **`PhysicsLodData.GetElement(timeScale)`** resolves the active **`PhysicsLodElement`** for the current substep. Internal systems call **`GetLodData(timeScale, lodIndex)`** on the settings blob when inserting into the [spatial map]({% link docs/guides/physics-singleton/spatial-map/index.md %}), collecting pairs, and writing [`CollisionData`]({% link docs/guides/physics-singleton/supporting-body-collision-structs/index.md %}).
+At runtime, **`PhysicsLodData.GetElement(timeScale)`** resolves the active **`PhysicsLodElement`** for the current substep. Internal systems call **`GetLodData(timeScale, lodIndex)`** on the settings blob when inserting into the [spatial map]({% link docs/guides/settings/spatial-map/index.md %}), collecting pairs, and writing [`CollisionData`]({% link docs/guides/physics-singleton/supporting-body-collision-structs/index.md %}).
 
 Bootstrap allocates native buffers using **`GetMaxLodData()`** — the **maximum** value of each field across **all tiers and all time-scale slots**. Per-frame work still respects the **active** tier for each body.
 
@@ -92,7 +127,7 @@ When **`TimeScale`** is **2**, the middle column applies; at **4** (and **3**, w
 
 ## What LOD affects
 
-LOD caps **object-to-object** work inside the [spatial map]({% link docs/guides/physics-singleton/spatial-map/index.md %}):
+LOD caps **object-to-object** work inside the [spatial map]({% link docs/guides/settings/spatial-map/index.md %}):
 
 - Cells a body occupies (**`CellPerEntity`**)
 - Neighbors seen per cell (**`DynamicsInCells`**, **`StaticInCells`**)

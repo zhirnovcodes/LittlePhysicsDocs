@@ -1,9 +1,9 @@
 ---
 title: Static
 layout: default
-parent: Types of bodies
-nav_order: 3
-permalink: /docs/guides/types-of-bodies/static/
+parent: Settings
+nav_order: 6
+permalink: /docs/guides/settings/static/
 description: Static rigid and trigger body types — sphere and capsule shapes.
 tags: [static, trigger, body-type]
 ---
@@ -38,7 +38,7 @@ Use **`ColliderScale`** and **`ColliderLocalPosition`** like other body types.
 
 ## Scene view
 
-When the GameObject is selected, the Scene view draws a wireframe sphere or capsule using the same rules as [kinematic bodies]({% link docs/guides/types-of-bodies/kinematic/index.md %}#scene-view): **yellow** for rigid colliders, **blue** for triggers. Size and offset reflect **`ColliderScale`**, **`ColliderLocalPosition`**, and transform scale.
+When the GameObject is selected, the Scene view draws a wireframe sphere or capsule using the same rules as [kinematic bodies]({% link docs/guides/settings/kinematic/index.md %}#scene-view): **yellow** for rigid colliders, **blue** for triggers. Size and offset reflect **`ColliderScale`**, **`ColliderLocalPosition`**, and transform scale.
 
 ## What does not affect static bodies
 
@@ -46,7 +46,7 @@ When the GameObject is selected, the Scene view draws a wireframe sphere or caps
 - **`PhysicsVelocityAuthoring`** logs a **warning** and is **ignored** on static authorings.
 - Static entities are **not** tested against **surfaces** in the built-in surface collision pass (that job skips `body.IsStatic`).
 
-For ground and large bounds, prefer [`SurfaceBodyAuthoring`]({% link docs/guides/types-of-bodies/surface/index.md %}) when you need every dynamic body checked every substep without spatial-map cell limits.
+For ground and large bounds, prefer [`SurfaceBodyAuthoring`]({% link docs/guides/settings/surface/index.md %}) when you need every dynamic body checked every substep without spatial-map cell limits.
 
 ## Authoring fields
 
@@ -79,6 +79,6 @@ Use [`StaticBodyBuilder`]({% link docs/guides/builders/static-body-builder/index
 
 ## Related
 
-- [Types of bodies overview]({% link docs/guides/types-of-bodies/index.md %})
-- [Kinematic]({% link docs/guides/types-of-bodies/kinematic/index.md %}) — moving colliders and moving triggers
-- [Spatial map]({% link docs/guides/physics-singleton/spatial-map/index.md %}) — `StaticMap` cell layout
+- [Settings overview]({% link docs/guides/settings/index.md %})
+- [Kinematic]({% link docs/guides/settings/kinematic/index.md %}) — moving colliders and moving triggers
+- [Spatial map]({% link docs/guides/settings/spatial-map/index.md %}) — `StaticMap` cell layout

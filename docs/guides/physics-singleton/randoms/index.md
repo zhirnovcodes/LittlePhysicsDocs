@@ -100,4 +100,4 @@ Pair **`Randoms[index]`** with the body index from **`IWriteIndex`** when you ne
 - [BodiesList]({% link docs/guides/physics-singleton/bodies-list/index.md %}) — parallel indexing with **`Randoms`**
 - [SimulationDataComponent]({% link docs/guides/physics-singleton/simulation-data-component/index.md %}) — `ActiveBodiesCount` and job handle
 - [IBodiesJob]({% link docs/guides/custom-jobs/ibodies-job/index.md %}) — **`IWriteIndex`** and **`ScheduleAndChain`**
-- [Spatial map]({% link docs/guides/physics-singleton/spatial-map/index.md %}) — source of the bootstrap seed
+- [Spatial map]({% link docs/guides/settings/spatial-map/index.md %}) — source of the bootstrap seed

@@ -91,7 +91,7 @@ For extra native arrays alongside body data — for example [`Randoms`]({% link 
 ## Limitations
 
 - **Dynamic bodies are spheres only** — mid-step shape assumptions match that constraint.
-- **Object-to-object collisions** only occur inside the [spatial map]({% link docs/guides/physics-singleton/spatial-map/index.md %}) bounds; outside the map, dynamics still get gravity and surface collision.
+- **Object-to-object collisions** only occur inside the [spatial map]({% link docs/guides/settings/spatial-map/index.md %}) bounds; outside the map, dynamics still get gravity and surface collision.
 - **Collision slot caps** come from LOD settings — not every theoretical overlap gets a slot when limits are hit.
 - **Determinism** decreases with loose LOD; tighter camera ranges improve repeatability.
 

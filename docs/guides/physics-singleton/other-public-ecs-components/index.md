@@ -72,9 +72,9 @@ The main **collider and material** record for dynamic, kinematic, and static bod
 
 | Authoring | **`BodyType`** | Shapes |
 |-----------|----------------|--------|
-| [`DynamicBodyAuthoring`]({% link docs/guides/types-of-bodies/dynamic/index.md %}) | **`Dynamic`** | Sphere only |
-| [`KinematicBodyAuthoring`]({% link docs/guides/types-of-bodies/kinematic/index.md %}) | **`Kinematic`** | Sphere, capsule |
-| [`StaticBodyAuthoring`]({% link docs/guides/types-of-bodies/static/index.md %}) | **`Static`** | Sphere, capsule |
+| [`DynamicBodyAuthoring`]({% link docs/guides/settings/dynamic/index.md %}) | **`Dynamic`** | Sphere only |
+| [`KinematicBodyAuthoring`]({% link docs/guides/settings/kinematic/index.md %}) | **`Kinematic`** | Sphere, capsule |
+| [`StaticBodyAuthoring`]({% link docs/guides/settings/static/index.md %}) | **`Static`** | Sphere, capsule |
 
 Runtime equivalents: [`DynamicBodyBuilder`]({% link docs/guides/builders/dynamic-body-builder/index.md %}), [`KinematicBodyBuilder`]({% link docs/guides/builders/kinematic-body-builder/index.md %}), [`StaticBodyBuilder`]({% link docs/guides/builders/static-body-builder/index.md %}).
 
@@ -132,7 +132,7 @@ Describes the **scene surface** collider — an infinite or large shape tested a
 
 Each frame, surface systems call **`ToBodyData(LocalToWorld)`** to build a temporary **`PhysicsBodyData`** for intersection tests — the surface is **not** stored in **`BodiesList`**.
 
-See [Types of bodies — Surface]({% link docs/guides/types-of-bodies/surface/index.md %}).
+See [Settings — Surface]({% link docs/guides/settings/surface/index.md %}).
 
 ## SpacialMapSettingsComponent
 
@@ -144,7 +144,7 @@ Scene singleton baked from **`SpacialMapAuthoring`**. Bootstrap requires it befo
 
 Object-to-object collision runs **only** inside this volume. Dynamics outside the map still receive gravity and surface collision.
 
-See [Spatial map]({% link docs/guides/physics-singleton/spatial-map/index.md %}) (authoring and grid layout).
+See [Spatial map]({% link docs/guides/settings/spatial-map/index.md %}) (authoring and grid layout).
 
 ## Gravity source components
 
@@ -165,7 +165,7 @@ Baked from **`GravitySourceAuthoring`**. Multiple sources can exist; the gravity
 | **`Direction`** | **`float3`** | **`-transform.up`** | Constant gravity direction |
 | **`Strength`** | **`float`** | **`9.81`** | Acceleration magnitude |
 
-See [Gravity]({% link docs/guides/physics-singleton/gravity/index.md %}).
+See [Gravity]({% link docs/guides/settings/gravity/index.md %}).
 
 ## PhysicsLodData and PhysicsLodElement
 
@@ -202,4 +202,4 @@ When no camera step exists, import keeps **`PhysicsBodyUpdateComponent.LodIndex`
 - [Supporting body and collision structs]({% link docs/guides/physics-singleton/supporting-body-collision-structs/index.md %}) — nested structs inside **`PhysicsBodyData`** and collision buffers
 - [Import workflow]({% link docs/guides/custom-jobs/import-workflow/index.md %}) — scheduling before or after internal import
 - [Export workflow]({% link docs/guides/custom-jobs/export-workflow/index.md %}) — reading results after simulation
-- [Types of bodies]({% link docs/guides/types-of-bodies/index.md %}) — authoring setup per body type
+- [Settings]({% link docs/guides/settings/index.md %}) — authoring setup per body type

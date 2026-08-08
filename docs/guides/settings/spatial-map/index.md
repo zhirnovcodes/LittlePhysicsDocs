@@ -1,9 +1,9 @@
 ---
 title: Spatial map
 layout: default
-parent: Physics singleton
-nav_order: 15
-permalink: /docs/guides/physics-singleton/spatial-map/
+parent: Settings
+nav_order: 2
+permalink: /docs/guides/settings/spatial-map/
 description: Spatial map concept, SpacialMapAuthoring setup, and runtime grid data.
 tags: [spatial-map, broad-phase, authoring, cells]
 ---
@@ -89,7 +89,7 @@ Use **`Grid3DExtensions`** helpers (`GetCell`, `GetCells`, `GridCellToIndex`) wh
 - **Extend the grid** — increase **`GridSize`** or reposition the authoring object so important gameplay stays inside bounds.
 - **Bodies falling through each other near the edge** — they may be outside the map AABB; only gravity and surfaces apply there.
 
-Capacity fields (**`DynamicsInCells`**, **`StaticInCells`**, **`CellPerEntity`**) are set per LOD tier on [`PhysicsSettingsAuthoring`]({% link docs/guides/physics-singleton/physics-settings-and-lod/index.md %}). Bootstrap sizes native buffers from the **maximum** values across all tiers.
+Capacity fields (**`DynamicsInCells`**, **`StaticInCells`**, **`CellPerEntity`**) are set per LOD tier on [`PhysicsSettingsAuthoring`]({% link docs/guides/settings/physics-settings-and-lod/index.md %}). Bootstrap sizes native buffers from the **maximum** values across all tiers.
 
 ## Setup checklist
 
@@ -101,7 +101,7 @@ Capacity fields (**`DynamicsInCells`**, **`StaticInCells`**, **`CellPerEntity`**
 ## Related
 
 - [CollisionMapSingleton]({% link docs/guides/physics-singleton/collision-map-singleton/index.md %}) — **`DynamicMap`** and **`StaticMap`** contents and update cycle
-- [Physics settings and LOD]({% link docs/guides/physics-singleton/physics-settings-and-lod/index.md %}) — **`CellPerEntity`**, **`DynamicsInCells`**, **`StaticInCells`**
+- [Physics settings and LOD]({% link docs/guides/settings/physics-settings-and-lod/index.md %}) — **`CellPerEntity`**, **`DynamicsInCells`**, **`StaticInCells`**
 - [How it works — Spatial map]({% link docs/how-it-works/index.md %}#spatial-map) — placement in the fixed-step pipeline
 - [PhysicsFixedSettingsComponent]({% link docs/guides/physics-singleton/physics-fixed-settings-component/index.md %}) — runtime **`SpacialMap`** field
 - [Getting Started]({% link docs/getting-started/index.md %}) — minimal scene setup

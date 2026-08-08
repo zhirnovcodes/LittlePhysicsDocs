@@ -88,7 +88,7 @@ For MonoBehaviour UI that runs outside ECS systems, query the singleton from the
 
 ## What reads TimeScale
 
-Internal systems pass **`TimeScale`** into LOD lookups so capacity limits (`DynamicsInCells`, `CellPerEntity`, `PairPerEntity`, and related fields) resolve to the correct tier for the current simulation speed. See [Physics settings and LOD]({% link docs/guides/physics-singleton/physics-settings-and-lod/index.md %}).
+Internal systems pass **`TimeScale`** into LOD lookups so capacity limits (`DynamicsInCells`, `CellPerEntity`, `PairPerEntity`, and related fields) resolve to the correct tier for the current simulation speed. See [Physics settings and LOD]({% link docs/guides/settings/physics-settings-and-lod/index.md %}).
 
 ## Related
 

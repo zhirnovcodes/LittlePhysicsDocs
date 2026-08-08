@@ -102,7 +102,7 @@ At runtime a LOD job assigns each body an **`LodIndex`** in `PhysicsBodyData`. C
 
 LOD affects **object-to-object** work inside the spatial map. It does **not** skip **surface** collision — surfaces are always tested against all dynamic bodies each substep.
 
-For field definitions and singleton access, see [Physics settings and LOD]({% link docs/guides/physics-singleton/physics-settings-and-lod/index.md %}).
+For field definitions and singleton access, see [Physics settings and LOD]({% link docs/guides/settings/physics-settings-and-lod/index.md %}).
 
 ## Spatial map
 
@@ -118,7 +118,7 @@ The map is centered on the authoring transform. Each frame, dynamic and kinemati
 
 **Outside the map**, bodies still receive **gravity** and **surface** collision, but **not** pairwise object collisions.
 
-For authoring setup, see [Getting Started]({% link docs/getting-started/index.md %}). For runtime structures (`DynamicMap`, `StaticMap`), see [Spatial map]({% link docs/guides/physics-singleton/spatial-map/index.md %}).
+For authoring setup, see [Getting Started]({% link docs/getting-started/index.md %}). For runtime structures (`DynamicMap`, `StaticMap`), see [Spatial map]({% link docs/guides/settings/spatial-map/index.md %}).
 
 ## Time control
 
@@ -130,6 +130,6 @@ Pause, slow down, or speed up the simulation at runtime by changing **`TimeScale
 |-------|------|
 | Install and first scene | [Getting Started]({% link docs/getting-started/index.md %}) |
 | System groups, diagram, hook order | [Pipeline]({% link docs/pipeline/index.md %}) |
-| Dynamic, kinematic, static, surface, triggers | [Types of bodies]({% link docs/guides/types-of-bodies/index.md %}) |
+| Settings, body types, LOD, spatial map, gravity | [Settings]({% link docs/guides/settings/index.md %}) |
 | `BodiesList`, collision maps, singletons | [Physics singleton]({% link docs/guides/physics-singleton/index.md %}) |
 | `IBodiesJob`, import/export workflow | [Custom jobs]({% link docs/guides/custom-jobs/index.md %}) |

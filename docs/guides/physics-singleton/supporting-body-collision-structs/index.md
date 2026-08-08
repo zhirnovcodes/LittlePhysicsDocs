@@ -133,4 +133,4 @@ Call **`Inverse()`** to swap **`Normal1`** and **`Normal2`** when reversing the 
 - [PhysicsBodyData]({% link docs/guides/physics-singleton/physics-body-data/index.md %}) — parent record containing **`PositionData`**, **`VelocityData`**, and **`RigidbodyData`**
 - [CollisionsSingleton]({% link docs/guides/physics-singleton/collisions-singleton/index.md %}) — buffers holding **`CollisionData`** and **`SurfaceCollisionData`**
 - [Other public ECS components]({% link docs/guides/physics-singleton/other-public-ecs-components/index.md %}) — ECS-side source fields baked into these structs
-- [Types of bodies]({% link docs/guides/types-of-bodies/index.md %}) — which body types populate velocity and collision results
+- [Settings]({% link docs/guides/settings/index.md %}) — which body types populate velocity and collision results

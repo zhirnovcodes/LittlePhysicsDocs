@@ -10,7 +10,7 @@ tags: [singleton, settings, substeps, friction]
 
 # PhysicsVariableSettingsComponent
 
-A singleton component with **simulation tuning values** copied from [Physics settings and LOD]({% link docs/guides/physics-singleton/physics-settings-and-lod/index.md %}) at bootstrap. Internal systems read it every fixed step for friction, push-out, and substeps.
+A singleton component with **simulation tuning values** copied from [Physics settings and LOD]({% link docs/guides/settings/physics-settings-and-lod/index.md %}) at bootstrap. Internal systems read it every fixed step for friction, push-out, and substeps.
 
 Unlike [`PhysicsFixedSettingsComponent`]({% link docs/guides/physics-singleton/physics-fixed-settings-component/index.md %}), these fields are plain struct data on the singleton — you can change them at runtime with **`SystemAPI.GetSingletonRW<PhysicsVariableSettingsComponent>()`** if you need live tuning (for example adjusting air drag or substep count from gameplay code).
 
@@ -54,7 +54,7 @@ Changes take effect on the next read inside the fixed-step loop. They do not reb
 
 ## Related
 
-- [Physics settings and LOD]({% link docs/guides/physics-singleton/physics-settings-and-lod/index.md %}) — authoring source for environment and substep defaults
+- [Physics settings and LOD]({% link docs/guides/settings/physics-settings-and-lod/index.md %}) — authoring source for environment and substep defaults
 - [PhysicsFixedSettingsComponent]({% link docs/guides/physics-singleton/physics-fixed-settings-component/index.md %}) — LOD tiers, layer matrix, spatial map, `MaxEntitiesCount`
 - [LittlePhysicsTimeComponent]({% link docs/guides/physics-singleton/little-physics-time-component/index.md %}) — time scale and scaled `DeltaTime`
 - [Pipeline — Fixed update]({% link docs/pipeline/index.md %}#fixed-update--inner-loop)

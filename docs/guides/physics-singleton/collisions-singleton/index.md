@@ -31,7 +31,7 @@ One **`SurfaceCollisionData`** per body index — contact flag, point, and norma
 
 A [`ListsArray<CollisionData>`]({% link docs/guides/physics-singleton/lists-array/index.md %}) per body (see [Collision slots](#collision-slots) below). Each slot holds one **object-to-object** contact: the other body’s index, contact geometry, penetration depth, and push-out weight. Check **`HasValue`** before using a slot.
 
-Pair collection respects LOD caps (**`PairPerEntity`**, **`CollisionPerEntity`**) from [physics settings]({% link docs/guides/physics-singleton/physics-settings-and-lod/index.md %}). Triggers still receive pair slots when overlaps occur — read results in [`ICollisionJob`]({% link docs/guides/custom-jobs/icollision-job/index.md %}) or inspect the map directly.
+Pair collection respects LOD caps (**`PairPerEntity`**, **`CollisionPerEntity`**) from [physics settings]({% link docs/guides/settings/physics-settings-and-lod/index.md %}). Triggers still receive pair slots when overlaps occur — read results in [`ICollisionJob`]({% link docs/guides/custom-jobs/icollision-job/index.md %}) or inspect the map directly.
 
 ## Collision slots
 
@@ -200,4 +200,4 @@ Non-colliding bodies are skipped before **`Execute`** runs — only indices with
 - [CollisionMapSingleton]({% link docs/guides/physics-singleton/collision-map-singleton/index.md %}) — broad-phase input for object-to-object detection
 - [PhysicsBodyData]({% link docs/guides/physics-singleton/physics-body-data/index.md %}) — body records referenced by **`OtherIndex`**
 - [Pairs debug window]({% link docs/guides/pairs-debug-window/index.md %}) — live view of pairs and collision slots
-- [Types of bodies]({% link docs/guides/types-of-bodies/index.md %}) — trigger vs rigid behavior in pair collection
+- [Settings]({% link docs/guides/settings/index.md %}) — trigger vs rigid behavior in pair collection

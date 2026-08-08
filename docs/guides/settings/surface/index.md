@@ -1,9 +1,9 @@
 ---
 title: Surface
 layout: default
-parent: Types of bodies
-nav_order: 4
-permalink: /docs/guides/types-of-bodies/surface/
+parent: Settings
+nav_order: 7
+permalink: /docs/guides/settings/surface/
 description: Surface body type — collides with all dynamic bodies every frame.
 tags: [surface, body-type, plane, box]
 ---
@@ -84,6 +84,6 @@ See [Getting Started — add a surface]({% link docs/getting-started/index.md %}
 
 ## Related
 
-- [Types of bodies overview]({% link docs/guides/types-of-bodies/index.md %})
-- [Dynamic]({% link docs/guides/types-of-bodies/dynamic/index.md %}) — primary consumers of surface response
+- [Settings overview]({% link docs/guides/settings/index.md %})
+- [Dynamic]({% link docs/guides/settings/dynamic/index.md %}) — primary consumers of surface response
 - [How it works — fixed update]({% link docs/how-it-works/index.md %}#fixed-update--timescale-and-substeps) — surface step runs inside each substep loop

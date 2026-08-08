@@ -9,9 +9,9 @@ tags: [debug, editor, pairs, collision, lod]
 
 # Pairs debug window
 
-The **CollisionPairs** editor window shows a live table of physics bodies and their **pair slots** or **collision slots** while Play Mode is running. Use it to tune [LOD capacity limits]({% link docs/guides/physics-singleton/physics-settings-and-lod/index.md %}) and to see when broad-phase pairs or narrow-phase contacts are dropped because lists are full.
+The **CollisionPairs** editor window shows a live table of physics bodies and their **pair slots** or **collision slots** while Play Mode is running. Use it to tune [LOD capacity limits]({% link docs/guides/settings/physics-settings-and-lod/index.md %}) and to see when broad-phase pairs or narrow-phase contacts are dropped because lists are full.
 
-The window reads buffers filled each substep by internal **`PairsDebugSystem`**. It is an editor-only tool — enable it with **`ShouldDebug`** on [`PhysicsSettingsAuthoring`]({% link docs/guides/physics-singleton/physics-settings-and-lod/index.md %}).
+The window reads buffers filled each substep by internal **`PairsDebugSystem`**. It is an editor-only tool — enable it with **`ShouldDebug`** on [`PhysicsSettingsAuthoring`]({% link docs/guides/settings/physics-settings-and-lod/index.md %}).
 
 ## Open the window
 
@@ -94,7 +94,7 @@ Surface collision results are **not** shown in this window — only object-to-ob
 
 ## Related
 
-- [Physics settings and LOD]({% link docs/guides/physics-singleton/physics-settings-and-lod/index.md %}) — **`ShouldDebug`**, **`PairPerEntity`**, **`CollisionPerEntity`**
+- [Physics settings and LOD]({% link docs/guides/settings/physics-settings-and-lod/index.md %}) — **`ShouldDebug`**, **`PairPerEntity`**, **`CollisionPerEntity`**
 - [CollisionsSingleton]({% link docs/guides/physics-singleton/collisions-singleton/index.md %}) — **`CollisionDataMap`** layout and update cycle
 - [CollisionMapSingleton]({% link docs/guides/physics-singleton/collision-map-singleton/index.md %}) — broad-phase input for pair collection
 - [ListsArray]({% link docs/guides/physics-singleton/lists-array/index.md %}) — fixed-capacity lists and **`TryAdd`** behavior

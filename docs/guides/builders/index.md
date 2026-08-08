@@ -16,11 +16,11 @@ Each builder mirrors what its matching authoring baker writes:
 
 | Builder | Authoring equivalent | Body type |
 |---------|---------------------|-----------|
-| [`DynamicBodyBuilder`]({% link docs/guides/builders/dynamic-body-builder/index.md %}) | [`DynamicBodyAuthoring`]({% link docs/guides/types-of-bodies/dynamic/index.md %}) | Dynamic sphere |
-| [`KinematicBodyBuilder`]({% link docs/guides/builders/kinematic-body-builder/index.md %}) | [`KinematicBodyAuthoring`]({% link docs/guides/types-of-bodies/kinematic/index.md %}) | Kinematic sphere or capsule |
-| [`StaticBodyBuilder`]({% link docs/guides/builders/static-body-builder/index.md %}) | [`StaticBodyAuthoring`]({% link docs/guides/types-of-bodies/static/index.md %}) | Static sphere or capsule |
+| [`DynamicBodyBuilder`]({% link docs/guides/builders/dynamic-body-builder/index.md %}) | [`DynamicBodyAuthoring`]({% link docs/guides/settings/dynamic/index.md %}) | Dynamic sphere |
+| [`KinematicBodyBuilder`]({% link docs/guides/builders/kinematic-body-builder/index.md %}) | [`KinematicBodyAuthoring`]({% link docs/guides/settings/kinematic/index.md %}) | Kinematic sphere or capsule |
+| [`StaticBodyBuilder`]({% link docs/guides/builders/static-body-builder/index.md %}) | [`StaticBodyAuthoring`]({% link docs/guides/settings/static/index.md %}) | Static sphere or capsule |
 
-Builders do **not** replace surfaces or scene singletons — use [`SurfaceBodyAuthoring`]({% link docs/guides/types-of-bodies/surface/index.md %}), [`SpacialMapAuthoring`]({% link docs/getting-started/index.md %}), and [`PhysicsSettingsAuthoring`]({% link docs/guides/physics-singleton/physics-settings-and-lod/index.md %}) in the subscene as usual.
+Builders do **not** replace surfaces or scene singletons — use [`SurfaceBodyAuthoring`]({% link docs/guides/settings/surface/index.md %}), [`SpacialMapAuthoring`]({% link docs/getting-started/index.md %}), and [`PhysicsSettingsAuthoring`]({% link docs/guides/settings/physics-settings-and-lod/index.md %}) in the subscene as usual.
 
 ## When to use builders
 
@@ -88,6 +88,6 @@ If you need to adjust spawned entities before they enter native memory, add syst
 
 ## Related
 
-- [Types of bodies]({% link docs/guides/types-of-bodies/index.md %}) — behavior of each body type
+- [Settings]({% link docs/guides/settings/index.md %}) — behavior of each body type
 - [Import workflow]({% link docs/guides/custom-jobs/import-workflow/index.md %}) — when spawned bodies join simulation
 - [Physics singleton]({% link docs/guides/physics-singleton/index.md %}) — native buffers after import

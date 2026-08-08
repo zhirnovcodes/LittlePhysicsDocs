@@ -1,9 +1,9 @@
 ---
 title: Kinematic
 layout: default
-parent: Types of bodies
-nav_order: 2
-permalink: /docs/guides/types-of-bodies/kinematic/
+parent: Settings
+nav_order: 5
+permalink: /docs/guides/settings/kinematic/
 description: Kinematic rigid and trigger body types — sphere and capsule shapes.
 tags: [kinematic, trigger, body-type]
 ---
@@ -91,6 +91,6 @@ Use [`KinematicBodyBuilder`]({% link docs/guides/builders/kinematic-body-builder
 
 ## Related
 
-- [Types of bodies overview]({% link docs/guides/types-of-bodies/index.md %})
-- [Static]({% link docs/guides/types-of-bodies/static/index.md %}) — fixed counterparts to kinematic colliders
+- [Settings overview]({% link docs/guides/settings/index.md %})
+- [Static]({% link docs/guides/settings/static/index.md %}) — fixed counterparts to kinematic colliders
 - [Custom jobs]({% link docs/guides/custom-jobs/index.md %}) — react to trigger intersections

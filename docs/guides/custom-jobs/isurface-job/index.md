@@ -128,5 +128,5 @@ Surface results are **not** shown in the pairs debug window.
 ## Related
 
 - [CollisionsSingleton — SurfaceCollisionMap]({% link docs/guides/physics-singleton/collisions-singleton/index.md %}#surfacecollisionmap)
-- [Types of bodies — Surface]({% link docs/guides/types-of-bodies/surface/index.md %}) — how surface bodies participate in simulation
+- [Settings — Surface]({% link docs/guides/settings/surface/index.md %}) — how surface bodies participate in simulation
 - [ICollisionJob]({% link docs/guides/custom-jobs/icollision-job/index.md %}) — object-to-object collision callbacks

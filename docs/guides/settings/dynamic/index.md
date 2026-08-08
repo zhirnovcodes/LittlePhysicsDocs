@@ -1,9 +1,9 @@
 ---
 title: Dynamic
 layout: default
-parent: Types of bodies
-nav_order: 1
-permalink: /docs/guides/types-of-bodies/dynamic/
+parent: Settings
+nav_order: 4
+permalink: /docs/guides/settings/dynamic/
 description: Dynamic body type — sphere only, affected by gravity, friction, surface, and collisions.
 tags: [dynamic, body-type, sphere]
 ---
@@ -72,6 +72,6 @@ Spawn dynamics at runtime with [`DynamicBodyBuilder`]({% link docs/guides/builde
 
 ## Related
 
-- [Types of bodies overview]({% link docs/guides/types-of-bodies/index.md %})
+- [Settings overview]({% link docs/guides/settings/index.md %})
 - [Getting Started — add physics bodies]({% link docs/getting-started/index.md %}#6-add-physics-bodies)
-- [Kinematic]({% link docs/guides/types-of-bodies/kinematic/index.md %}) — bodies you move manually that push dynamics
+- [Kinematic]({% link docs/guides/settings/kinematic/index.md %}) — bodies you move manually that push dynamics

@@ -1,9 +1,9 @@
 ---
 title: Gravity
 layout: default
-parent: Physics singleton
-nav_order: 17
-permalink: /docs/guides/physics-singleton/gravity/
+parent: Settings
+nav_order: 3
+permalink: /docs/guides/settings/gravity/
 description: Directional and spherical gravity sources with GravitySourceAuthoring.
 tags: [gravity, authoring, dynamic-bodies]
 ---
@@ -79,7 +79,7 @@ Gravity is optional — omit the authoring component for zero-G tests. Most scen
 | **Body types** | Only **dynamic** bodies receive gravity |
 | **Baked values** | **`Center`**, **`Radius`**, and **`Direction`** are captured at **bake** time. Moving or scaling the GameObject at runtime does not update the ECS components until you rebake |
 | **Singleton components** | Each gravity mode uses **`IComponentData`** singletons. Bake **at most one** directional and **at most one** spherical source — multiple baked entities of the same type can break singleton access |
-| **Map boundary** | Gravity applies **inside and outside** the [spatial map]({% link docs/guides/physics-singleton/spatial-map/index.md %}) |
+| **Map boundary** | Gravity applies **inside and outside** the [spatial map]({% link docs/guides/settings/spatial-map/index.md %}) |
 | **LOD** | Gravity is **not** reduced by LOD tier |
 
 Custom systems in **`LittlePhysicsUserSystemGroup`** run **after** gravity and friction. To apply forces before integration, schedule in that group or modify **`BodiesList`** velocity during import/export workflows.
@@ -105,7 +105,7 @@ There is no built-in runtime API to retarget gravity after bake. For moving attr
 
 ## Related
 
-- [Types of bodies — Dynamic]({% link docs/guides/types-of-bodies/dynamic/index.md %}) — the only body type affected by gravity
+- [Settings — Dynamic]({% link docs/guides/settings/dynamic/index.md %}) — the only body type affected by gravity
 - [LittlePhysicsTimeComponent]({% link docs/guides/physics-singleton/little-physics-time-component/index.md %}) — **`DeltaTime`** used in gravity integration
 - [Pipeline — Fixed update]({% link docs/pipeline/index.md %}#fixed-update--inner-loop) — gravity runs first in the inner loop
 - [Getting Started]({% link docs/getting-started/index.md %}) — add gravity in a minimal scene

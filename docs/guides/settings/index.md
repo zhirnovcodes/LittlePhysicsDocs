@@ -1,20 +1,32 @@
 ---
-title: Types of bodies
+title: Settings
 layout: default
 nav_order: 5
 has_children: true
-permalink: /docs/guides/types-of-bodies/
-description: Dynamic, kinematic, static, surface, and trigger body types.
-tags: [guides, body-types, dynamic, kinematic, static, surface, trigger]
+permalink: /docs/guides/settings/
+description: Physics settings, LOD, spatial map, gravity, and body types.
+tags: [guides, settings, lod, spatial-map, gravity, body-types]
 ---
 
-# Types of bodies
+# Settings
 
-Little Physics divides colliders into **body types**. Each type defines which forces apply, which shapes are allowed, how often the body appears in the **spatial map**, and whether contacts produce physical response or intersection data only.
+This section covers the authoring you configure once per scene — simulation limits and LOD, the spatial map volume, gravity sources — plus the **body types** you place in that setup.
 
-All body types are created with **authoring** components on GameObjects inside a **subscene**, then baked into ECS entities. See [Getting Started]({% link docs/getting-started/index.md %}) for the setup workflow.
+All of these use **authoring** components on GameObjects inside a **subscene**, then bake into ECS entities. See [Getting Started]({% link docs/getting-started/index.md %}) for the setup workflow.
 
-## At a glance
+## Pages in this section
+
+| Page | Covers |
+|------|--------|
+| [Physics settings and LOD]({% link docs/guides/settings/physics-settings-and-lod/index.md %}) | `PhysicsSettingsAuthoring`, capacity limits, LOD tiers, push-out |
+| [Spatial map]({% link docs/guides/settings/spatial-map/index.md %}) | `SpacialMapAuthoring`, grid bounds, object-to-object collision region |
+| [Gravity]({% link docs/guides/settings/gravity/index.md %}) | Directional and spherical `GravitySourceAuthoring` |
+| [Dynamic]({% link docs/guides/settings/dynamic/index.md %}) | Simulated spheres — gravity, friction, collisions, surfaces |
+| [Kinematic]({% link docs/guides/settings/kinematic/index.md %}) | Rigid movers and triggers on an update interval |
+| [Static]({% link docs/guides/settings/static/index.md %}) | Fixed colliders and triggers baked into the map once |
+| [Surface]({% link docs/guides/settings/surface/index.md %}) | Ground, walls, and bounds that all dynamics hit every frame |
+
+## Body types at a glance
 
 | Type | Authoring | Shapes | Affected by gravity & friction | Object-to-object collisions | Surface collision |
 |------|-----------|--------|--------------------------------|----------------------------|-------------------|
@@ -58,20 +70,11 @@ Two separate collision paths exist:
 - **Object-to-object** — dynamic and kinematic bodies inside the volume defined by [`SpacialMapAuthoring`]({% link docs/getting-started/index.md %}#3-define-the-spatial-map) are inserted into grid cells and tested against neighbors. **Outside the map**, bodies still get gravity and surface contact, but **not** pairwise object collisions.
 - **Surface** — every **dynamic** body is tested against the scene surface **every substep**, regardless of LOD or map cell. **Kinematic** bodies (including triggers) also get surface **intersection** tests; triggers receive contact data without physical push-out.
 
-For map internals, see [Spatial map]({% link docs/guides/physics-singleton/spatial-map/index.md %}) and [How it works]({% link docs/how-it-works/index.md %}#spatial-map).
+For map internals, see [Spatial map]({% link docs/guides/settings/spatial-map/index.md %}) and [How it works]({% link docs/how-it-works/index.md %}#spatial-map).
 
 ## Body count limit
 
 Import respects **`MaxEntitiesCount`** on `PhysicsSettingsAuthoring`. Bodies beyond the cap are **ignored** for the simulation. Plan capacity when spawning large crowds.
-
-## Pages in this section
-
-| Page | Covers |
-|------|--------|
-| [Dynamic]({% link docs/guides/types-of-bodies/dynamic/index.md %}) | Simulated spheres — gravity, friction, collisions, surfaces |
-| [Kinematic]({% link docs/guides/types-of-bodies/kinematic/index.md %}) | Rigid movers and triggers on an update interval |
-| [Static]({% link docs/guides/types-of-bodies/static/index.md %}) | Fixed colliders and triggers baked into the map once |
-| [Surface]({% link docs/guides/types-of-bodies/surface/index.md %}) | Ground, walls, and bounds that all dynamics hit every frame |
 
 ## What to read next
 

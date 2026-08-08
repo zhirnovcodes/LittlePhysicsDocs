@@ -145,5 +145,5 @@ private struct CollisionEventJob : ICollisionJob.IEntities
 ## Related
 
 - [CollisionsSingleton]({% link docs/guides/physics-singleton/collisions-singleton/index.md %}) — buffer layout and update cycle
-- [Types of bodies — triggers]({% link docs/guides/types-of-bodies/index.md %}) — trigger vs rigid pair behavior
+- [Settings — triggers]({% link docs/guides/settings/index.md %}) — trigger vs rigid pair behavior
 - [ISurfaceJob]({% link docs/guides/custom-jobs/isurface-job/index.md %}) — surface contact callbacks

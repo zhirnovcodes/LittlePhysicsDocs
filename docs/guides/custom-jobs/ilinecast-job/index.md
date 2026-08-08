@@ -10,7 +10,7 @@ tags: [custom-jobs, ilinecast-job, linecast]
 
 # ILineCastJob
 
-Single-threaded linecast callbacks against bodies registered in the [spatial map]({% link docs/guides/physics-singleton/spatial-map/index.md %})). Unlike the other package job interfaces, **`ILineCastJob`** schedules as **`ScheduleMode.Single`** — one worker thread per invocation.
+Single-threaded linecast callbacks against bodies registered in the [spatial map]({% link docs/guides/settings/spatial-map/index.md %})). Unlike the other package job interfaces, **`ILineCastJob`** schedules as **`ScheduleMode.Single`** — one worker thread per invocation.
 
 Schedule inside **`LittlePhysicsUserSystemGroup`** so broad-phase maps and **`BodiesList`** reflect the current substep.
 
@@ -170,5 +170,5 @@ For manual queries without the job interface, call **`PhysicsStructuresComponent
 ## Related
 
 - [CollisionMapSingleton]({% link docs/guides/physics-singleton/collision-map-singleton/index.md %}) — maps used by linecast broad phase
-- [Spatial map]({% link docs/guides/physics-singleton/spatial-map/index.md %}) — grid bounds and cell helpers
+- [Spatial map]({% link docs/guides/settings/spatial-map/index.md %}) — grid bounds and cell helpers
 - [Import workflow]({% link docs/guides/custom-jobs/import-workflow/index.md %}) — **`LineCastInputSystem`** pattern

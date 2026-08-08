@@ -41,7 +41,7 @@ One **`PhysicsBodyData`** exists per active body index (**`0 … ActiveBodiesCou
 | Kinematic / static | **`Sphere`**, **`Capsule`** |
 | Surface (via surface component) | **`SimplePlane`**, **`SimpleBox`**, **`ReverseSphere`**, etc. |
 
-See [Types of bodies]({% link docs/guides/types-of-bodies/index.md %}) for behavior differences.
+See [Settings]({% link docs/guides/settings/index.md %}) for behavior differences.
 
 ## Update cadence
 

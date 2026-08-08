@@ -10,7 +10,7 @@ tags: [builders, dynamic, runtime, sphere]
 
 # DynamicBodyBuilder
 
-**`DynamicBodyBuilder`** adds **`PhysicsBodyComponent`**, **`PhysicsBodyUpdateComponent`**, and **`PhysicsVelocityComponent`** to an entity for a **dynamic sphere** body. It is the runtime equivalent of [`DynamicBodyAuthoring`]({% link docs/guides/types-of-bodies/dynamic/index.md %}) plus optional initial velocity from [`PhysicsVelocityAuthoring`]({% link docs/guides/physics-singleton/other-public-ecs-components/index.md %}).
+**`DynamicBodyBuilder`** adds **`PhysicsBodyComponent`**, **`PhysicsBodyUpdateComponent`**, and **`PhysicsVelocityComponent`** to an entity for a **dynamic sphere** body. It is the runtime equivalent of [`DynamicBodyAuthoring`]({% link docs/guides/settings/dynamic/index.md %}) plus optional initial velocity from [`PhysicsVelocityAuthoring`]({% link docs/guides/physics-singleton/other-public-ecs-components/index.md %}).
 
 Dynamic bodies are **spheres only** — the builder always sets **`ColliderType.Sphere`**.
 
@@ -91,10 +91,10 @@ new DynamicBodyBuilder(0f, 0.5f, 1f, 2f)
 | **`PhysicsBodyUpdateComponent`** | **`Interval = 0`**, **`TimeElapsed = 0`**, **`Index = -1`**, **`LodIndex = 0`** |
 | **`PhysicsVelocityComponent`** | **`Linear`** / **`Angular`** from fluent methods |
 
-Import copies these into [`PhysicsBodyData`]({% link docs/guides/physics-singleton/physics-body-data/index.md %}) on the next **`LateSimulation`** pass. Pairwise collisions apply inside the [spatial map]({% link docs/guides/physics-singleton/spatial-map/index.md %}); surface contact runs every substep regardless of map cells.
+Import copies these into [`PhysicsBodyData`]({% link docs/guides/physics-singleton/physics-body-data/index.md %}) on the next **`LateSimulation`** pass. Pairwise collisions apply inside the [spatial map]({% link docs/guides/settings/spatial-map/index.md %}); surface contact runs every substep regardless of map cells.
 
 ## Related
 
 - [Builders overview]({% link docs/guides/builders/index.md %})
-- [Dynamic body type]({% link docs/guides/types-of-bodies/dynamic/index.md %})
+- [Dynamic body type]({% link docs/guides/settings/dynamic/index.md %})
 - [Import workflow]({% link docs/guides/custom-jobs/import-workflow/index.md %})
