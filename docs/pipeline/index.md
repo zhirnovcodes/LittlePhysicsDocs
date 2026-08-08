@@ -19,14 +19,8 @@ Each Unity frame, Little Physics runs through four phases. The fixed-step phase 
 
 ```mermaid
 flowchart TB
-    subgraph init [InitializationSystemGroup]
-        BS[LittlePhysicsBootstrapSystem]
-        BS --> PRT
-    end
-
     subgraph late [LateSimulationSystemGroup]
         IPS[ImportPhysicsDataSystem]
-        USI --> PS --> IPS
     end
 
     subgraph fixed [FixedStepSimulationSystemGroup]
@@ -43,10 +37,8 @@ flowchart TB
 
     subgraph sim [SimulationSystemGroup]
         EPS[ExportPhysicsDataSystem]
-        EPS --> USE
     end
 
-    PRT --> USI
     IPS --> G
     PV --> EPS
 ```
@@ -131,6 +123,7 @@ See [PhysicsReadyTag]({% link docs/guides/physics-singleton/physics-ready-tag/in
 | 1 | **Your systems** (optional) | Modify ECS components before they enter native memory |
 | 2 | `PhysicsStepSystem` | Updates `PhysicsStepComponent` with main-camera position, forward, and projection (used for LOD) |
 | 3 | `ImportPhysicsDataSystem` | Counts bodies (respecting `MaxEntitiesCount`), assigns body indices, computes LOD tiers, copies data into `BodiesList` and `EntitiesMap` |
+| 4 | **Your systems** (optional) | Modify data structures after they enter native memory |
 
 Import is the handoff from baked components to the unmanaged pool used during the fixed-step loop. `SimulationDataComponent.ActiveBodiesCount` reflects how many bodies participate in the current step.
 
@@ -172,8 +165,9 @@ Use `LittlePhysicsTimeComponent.DeltaTime` inside this group for the scaled subs
 
 | Step | System | What it does |
 |------|--------|--------------|
-| 1 | `ExportPhysicsDataSystem` | Writes position, rotation, and velocity from native structures back to ECS components and transforms |
-| 2 | **Your systems** (optional) | Read or modify components after the internal write-back |
+| 1 | **Your systems** (optional) | Read or modify data structures before the internal write-back |
+| 2 | `ExportPhysicsDataSystem` | Writes position, rotation, and velocity from native structures back to ECS components and transforms |
+| 3 | **Your systems** (optional) | Read or modify components after the internal write-back |
 
 ## Custom system hook points
 
